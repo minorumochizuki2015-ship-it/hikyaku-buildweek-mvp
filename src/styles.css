@@ -90,6 +90,21 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .ring-copy strong { color: #fffaf0; font-family: Georgia, serif; font-size: clamp(2.5rem, 13vw, 4.2rem); line-height: .83; letter-spacing: -.06em; }
 .ring-copy small { margin-left: 3px; color: #f7d98a; font-family: "Avenir Next", sans-serif; font-size: .32em; letter-spacing: 0; }
 .ring-copy span { margin-top: 9px; color: #e8e4dc; font-size: .67rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.checkpoint-route { position: relative; margin: 0 0 14px; padding: 13px 2px 9px; border-block: 1px solid rgb(247 217 138 / 30%); background: linear-gradient(90deg, rgb(23 22 49 / 92%), rgb(32 28 58 / 92%), rgb(23 22 49 / 92%)); }
+.checkpoint-track { position: absolute; top: 27px; right: calc(100% / 12); left: calc(100% / 12); height: 2px; background: linear-gradient(90deg, #f4b942, #9c78ff 78%, rgb(247 242 232 / 30%)); }
+.checkpoint-stops { position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: start; margin: 0; padding: 0; list-style: none; }
+.checkpoint-stop { display: grid; min-width: 0; justify-items: center; color: #aaa5b5; text-align: center; }
+.checkpoint-node { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid rgb(247 242 232 / 33%); border-radius: 50%; background: #171631; color: #aaa5b5; font-size: .66rem; line-height: 1; }
+.checkpoint-name { margin-top: 6px; color: inherit; font-size: .62rem; font-weight: 800; letter-spacing: .025em; line-height: 1.35; line-break: strict; white-space: nowrap; }
+.checkpoint-stop.completed { color: #f7d98a; }
+.checkpoint-stop.completed .checkpoint-node { border-color: #f4b942; background: #f4b942; color: #21180e; box-shadow: 0 0 11px rgb(244 185 66 / 25%); }
+.checkpoint-stop.current { color: #fffaf0; }
+.checkpoint-stop.current .checkpoint-node { border-color: #fff4c9; border-radius: 3px 50% 50% 3px; background: #9c78ff; color: #fffaf0; box-shadow: 0 0 14px rgb(156 120 255 / 60%); transform: translateY(-2px); }
+.checkpoint-stop.finish { color: #d4c6ff; }
+.checkpoint-stop.finish .checkpoint-node { border-color: #9c78ff; background: #201a3c; color: #d4c6ff; }
+.checkpoint-stop.finish.completed .checkpoint-node { border-color: #f4b942; background: #f4b942; color: #21180e; }
+.checkpoint-next { min-height: 1.4em; margin: 11px 0 0; color: #d4cddd; font-size: .76rem; font-weight: 700; line-height: 1.45; text-align: center; }
+.checkpoint-next strong { color: #f7d98a; }
 .mission-message { min-height: 74px; padding: 15px 16px; border-left: 3px solid #f4b942; border-radius: 0 10px 10px 0; background: #191d36; }
 .mission-message p { margin: 0; color: #f7f2e8; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.04rem; line-height: 1.55; }
 .mission-message .location-status { margin-top: 7px; color: #f7d98a; font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", sans-serif; font-size: .78rem; font-weight: 700; }

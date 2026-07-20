@@ -10,6 +10,7 @@ import {
   type MissionInput,
 } from '../shared/mockMission'
 import { distanceTargetMetres, rivalDistanceAtElapsedSeconds, type MovementMode, startWalkTracking } from './movement'
+import { checkpointRouteState } from './checkpointRoute'
 
 type JourneyState = 'idle' | 'generating' | 'ready' | 'active' | 'paused' | 'completing' | 'completed'
 
@@ -55,6 +56,37 @@ function arrivalRivalSummary(playerDistanceMetres: number, rivalDistanceMetres: 
   return playerDistanceMetres > rivalDistanceMetres
     ? `You finished ${gapMetres}m ahead of Yuzu, the simulated AI pacer.`
     : `Yuzu, the simulated AI pacer, finished ${gapMetres}m ahead of you.`
+}
+
+export function CheckpointRoute({ progress, targetDistanceMetres }: { progress: number; targetDistanceMetres: number }) {
+  const route = checkpointRouteState(progress, targetDistanceMetres)
+
+  return (
+    <section className="checkpoint-route" aria-label="Edo checkpoint route">
+      <div className="checkpoint-track" aria-hidden="true" />
+      <ol className="checkpoint-stops">
+        <li className="checkpoint-stop completed checkpoint-start">
+          <span className="checkpoint-node" aria-hidden="true">●</span>
+          <span className="checkpoint-name">出立</span>
+        </li>
+        {route.waypoints.map((waypoint) => (
+          <li className={`checkpoint-stop ${waypoint.state}`} key={waypoint.name} aria-current={waypoint.state === 'current' ? 'step' : undefined}>
+            <span className="checkpoint-node" aria-hidden="true">{waypoint.state === 'current' ? '⚑' : '●'}</span>
+            <span className="checkpoint-name">{waypoint.name}</span>
+          </li>
+        ))}
+        <li className={`checkpoint-stop finish ${progress >= 100 ? 'completed' : ''}`}>
+          <span className="checkpoint-node" aria-hidden="true">✦</span>
+          <span className="checkpoint-name">到着</span>
+        </li>
+      </ol>
+      <p className="checkpoint-next" aria-live="polite">
+        {route.nextCheckpoint
+          ? <>Next: <strong>{route.nextCheckpoint.name}</strong> — {route.nextCheckpoint.distanceRemainingMetres}m</>
+          : <>Final stretch — the destination awaits.</>}
+      </p>
+    </section>
+  )
 }
 
 export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input: MissionInput, movementMode: MovementMode) => void; generating: boolean }) {
@@ -185,6 +217,8 @@ export function JourneyScreen({ mission, state, stats, targetDistanceMetres, ava
           </div>
         </div>
       </section>
+
+      <CheckpointRoute progress={stats.progress} targetDistanceMetres={targetDistanceMetres} />
 
       <section className="mission-message" aria-live="polite">
         <p>{milestoneFor(stats.progress, mission)}</p>

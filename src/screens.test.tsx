@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it, vi } from 'vitest'
 import { ArrivalScreen, DispatchScreen, JourneyScreen } from './App'
+import { checkpointRouteState } from './checkpointRoute'
 import { distanceTargetMetres, haversineDistanceMetres, rivalDistanceAtElapsedSeconds, rivalPaceMultiplier, startWalkTracking } from './movement'
 import { mockCompleteMission, mockGenerateMission } from '../shared/mockMission'
 
@@ -89,5 +90,18 @@ describe('movement tracking', () => {
       if (originalNavigator) Object.defineProperty(globalThis, 'navigator', originalNavigator)
       else delete (globalThis as { navigator?: Navigator }).navigator
     }
+  })
+})
+
+describe('checkpoint route', () => {
+  it('marks passed checkpoints complete and the approaching checkpoint current', () => {
+    const route = checkpointRouteState(45, 800)
+
+    expect(route.waypoints.map((waypoint) => waypoint.state)).toEqual(['completed', 'completed', 'current', 'upcoming'])
+    expect(route.nextCheckpoint).toMatchObject({ name: '浅草寺', distanceRemainingMetres: 120 })
+  })
+
+  it('shows the final stretch only after every named checkpoint has been passed', () => {
+    expect(checkpointRouteState(100, 800).nextCheckpoint).toBeNull()
   })
 })
