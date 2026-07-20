@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   isMission,
   isMissionCompletion,
@@ -9,15 +9,15 @@ import {
   type MissionCompletion,
   type MissionInput,
 } from '../shared/mockMission'
+import { distanceTargetMetres, type MovementMode, startWalkTracking } from './movement'
 
 type JourneyState = 'idle' | 'generating' | 'ready' | 'active' | 'paused' | 'completing' | 'completed'
 
 interface JourneyStats {
   elapsedSeconds: number
   progress: number
+  distanceMetres: number
 }
-
-const progressDistanceMetres = 480
 
 async function postApi<T>(path: string, body: MissionInput | CompletionSummary, validate: (value: unknown) => value is T): Promise<T> {
   const response = await fetch(path, {
@@ -43,10 +43,11 @@ function milestoneFor(progress: number, mission: Mission): string {
   return mission.briefing
 }
 
-export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input: MissionInput) => void; generating: boolean }) {
+export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input: MissionInput, movementMode: MovementMode) => void; generating: boolean }) {
   const [availableMinutes, setAvailableMinutes] = useState<AvailableMinutes>(10)
   const [energy, setEnergy] = useState<Energy>('Steady')
   const [displayName, setDisplayName] = useState('')
+  const [movementMode, setMovementMode] = useState<MovementMode>('demo')
 
   return (
     <main className="screen dispatch-screen" aria-labelledby="dispatch-title">
@@ -70,7 +71,7 @@ export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input:
         className="dispatch-form"
         onSubmit={(event) => {
           event.preventDefault()
-          onGenerate({ availableMinutes, energy, displayName: displayName.trim() || undefined })
+          onGenerate({ availableMinutes, energy, displayName: displayName.trim() || undefined }, movementMode)
         }}
       >
         <fieldset>
@@ -82,6 +83,20 @@ export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input:
                 <span>{minutes}<small> min</small></span>
               </label>
             ))}
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Movement mode</legend>
+          <div className="choice-row movement-row">
+            <label className="choice">
+              <input type="radio" name="movement-mode" value="walk" checked={movementMode === 'walk'} onChange={() => setMovementMode('walk')} />
+              <span>Walk Mode</span>
+            </label>
+            <label className="choice">
+              <input type="radio" name="movement-mode" value="demo" checked={movementMode === 'demo'} onChange={() => setMovementMode('demo')} />
+              <span>Demo Journey</span>
+            </label>
           </div>
         </fieldset>
 
@@ -109,15 +124,18 @@ export function DispatchScreen({ onGenerate, generating }: { onGenerate: (input:
   )
 }
 
-export function JourneyScreen({ mission, state, stats, onPause, onEnd }: {
+export function JourneyScreen({ mission, state, stats, targetDistanceMetres, movementMode, locationStatus, onPause, onEnd }: {
   mission: Mission
   state: Extract<JourneyState, 'ready' | 'active' | 'paused' | 'completing'>
   stats: JourneyStats
+  targetDistanceMetres: number
+  movementMode: MovementMode
+  locationStatus: string
   onPause: () => void
   onEnd: () => void
 }) {
-  const distance = Math.round((stats.progress / 100) * progressDistanceMetres)
-  const progressLabel = state === 'ready' ? 'Mission ready' : state === 'paused' ? 'Journey paused' : state === 'completing' ? 'Writing arrival…' : 'Demo Journey'
+  const distance = Math.round(stats.distanceMetres)
+  const progressLabel = state === 'ready' ? 'Mission ready' : state === 'paused' ? 'Journey paused' : state === 'completing' ? 'Writing arrival…' : movementMode === 'walk' ? 'Walk Mode' : 'Demo Journey'
   const ringRadius = 84
   const ringCircumference = 2 * Math.PI * ringRadius
 
@@ -128,7 +146,7 @@ export function JourneyScreen({ mission, state, stats, onPause, onEnd }: {
           <p className="eyebrow">{progressLabel}</p>
           <h1 id="journey-title">{mission.title}</h1>
         </div>
-        <span className="demo-badge">DEMO</span>
+        <span className="demo-badge">{movementMode === 'walk' ? 'WALK' : 'DEMO'}</span>
       </header>
 
       <section className="journey-stage" aria-label="Courier route progress">
@@ -154,11 +172,12 @@ export function JourneyScreen({ mission, state, stats, onPause, onEnd }: {
 
       <section className="mission-message" aria-live="polite">
         <p>{milestoneFor(stats.progress, mission)}</p>
+        {locationStatus && <p className="location-status">{locationStatus}</p>}
       </section>
 
       <section className="journey-detail" aria-label="Journey metrics">
         <span><strong>{formatDuration(stats.elapsedSeconds)}</strong> elapsed</span>
-        <span><strong>{Math.max(progressDistanceMetres - distance, 0)}m</strong> remaining</span>
+        <span><strong>{Math.max(targetDistanceMetres - distance, 0)}m</strong> remaining</span>
       </section>
 
       <div className="journey-actions">
@@ -177,7 +196,7 @@ export function ArrivalScreen({ mission, completion, stats, onRestart }: {
   stats: JourneyStats
   onRestart: () => void
 }) {
-  const distance = Math.round((stats.progress / 100) * progressDistanceMetres)
+  const distance = Math.round(stats.distanceMetres)
   const [shareStatus, setShareStatus] = useState('')
   const [mealOpen, setMealOpen] = useState(false)
   const text = `HIYAKU — ${mission.title}: ${completion.rank}. ${distance}m in ${formatDuration(stats.elapsedSeconds)}.`
@@ -248,8 +267,16 @@ export function ArrivalScreen({ mission, completion, stats, onRestart }: {
 export default function App() {
   const [state, setState] = useState<JourneyState>('idle')
   const [mission, setMission] = useState<Mission | null>(null)
-  const [stats, setStats] = useState<JourneyStats>({ elapsedSeconds: 0, progress: 0 })
+  const [stats, setStats] = useState<JourneyStats>({ elapsedSeconds: 0, progress: 0, distanceMetres: 0 })
   const [completion, setCompletion] = useState<MissionCompletion | null>(null)
+  const [targetDistanceMetres, setTargetDistanceMetres] = useState<number | null>(null)
+  const [movementMode, setMovementMode] = useState<MovementMode>('demo')
+  const [locationStatus, setLocationStatus] = useState('')
+  const distanceMetresRef = useRef(0)
+
+  useEffect(() => {
+    distanceMetresRef.current = stats.distanceMetres
+  }, [stats.distanceMetres])
 
   useEffect(() => {
     if (state !== 'ready') return
@@ -258,22 +285,57 @@ export default function App() {
   }, [state])
 
   useEffect(() => {
-    if (state !== 'active') return
+    if (state !== 'active' || movementMode !== 'demo' || targetDistanceMetres === null) return
     const tick = window.setInterval(() => {
       setStats((current) => {
-        const next = { elapsedSeconds: current.elapsedSeconds + 5, progress: Math.min(100, current.progress + 5) }
+        const progress = Math.min(100, current.progress + 5)
+        const next = { elapsedSeconds: current.elapsedSeconds + 5, progress, distanceMetres: progress / 100 * targetDistanceMetres }
         if (next.progress === 100) setState('completing')
         return next
       })
     }, 800)
     return () => window.clearInterval(tick)
-  }, [state])
+  }, [state, movementMode, targetDistanceMetres])
 
   useEffect(() => {
-    if (state !== 'completing' || !mission) return
+    if (state !== 'active' || movementMode !== 'walk') return
+    const tick = window.setInterval(() => {
+      setStats((current) => ({ ...current, elapsedSeconds: current.elapsedSeconds + 1 }))
+    }, 1_000)
+    return () => window.clearInterval(tick)
+  }, [state, movementMode])
+
+  useEffect(() => {
+    if (state !== 'active' || movementMode !== 'walk' || targetDistanceMetres === null) return
+    if (!navigator.geolocation) {
+      const fallback = window.setTimeout(() => {
+        setLocationStatus('Location unavailable — continuing with Demo Journey.')
+        setMovementMode('demo')
+      }, 0)
+      return () => window.clearTimeout(fallback)
+    }
+    return startWalkTracking(
+      navigator.geolocation,
+      distanceMetresRef.current,
+      targetDistanceMetres,
+      (distanceMetres, progress) => {
+        const completedDistance = Math.min(distanceMetres, targetDistanceMetres)
+        distanceMetresRef.current = completedDistance
+        setStats((current) => ({ ...current, distanceMetres: completedDistance, progress }))
+        if (progress === 100) setState('completing')
+      },
+      () => {
+        setLocationStatus('Location unavailable — continuing with Demo Journey.')
+        setMovementMode('demo')
+      },
+    )
+  }, [state, movementMode, targetDistanceMetres])
+
+  useEffect(() => {
+    if (state !== 'completing' || !mission || targetDistanceMetres === null) return
     let cancelled = false
     const summary: CompletionSummary = {
-      distanceMeters: progressDistanceMetres,
+      distanceMeters: targetDistanceMetres,
       durationSeconds: stats.elapsedSeconds,
       completionPercent: 100,
       missionTitle: mission.title,
@@ -289,17 +351,21 @@ export default function App() {
         setState('idle')
       })
     return () => { cancelled = true }
-  }, [state, mission, stats.elapsedSeconds])
+  }, [state, mission, stats.elapsedSeconds, targetDistanceMetres])
 
   const activeMission = useMemo(() => mission, [mission])
 
-  const generateMission = async (input: MissionInput) => {
+  const generateMission = async (input: MissionInput, selectedMovementMode: MovementMode) => {
     setState('generating')
     try {
       const generatedMission = await postApi('/api/mission', input, isMission)
       setMission(generatedMission)
-      setStats({ elapsedSeconds: 0, progress: 0 })
+      distanceMetresRef.current = 0
+      setStats({ elapsedSeconds: 0, progress: 0, distanceMetres: 0 })
       setCompletion(null)
+      setTargetDistanceMetres(distanceTargetMetres(input.availableMinutes, input.energy))
+      setMovementMode(selectedMovementMode)
+      setLocationStatus('')
       setState('ready')
     } catch {
       setState('idle')
@@ -308,8 +374,9 @@ export default function App() {
 
   if (state === 'idle' || state === 'generating') return <DispatchScreen onGenerate={generateMission} generating={state === 'generating'} />
   if ((state === 'ready' || state === 'active' || state === 'paused' || state === 'completing') && activeMission) {
-    return <JourneyScreen mission={activeMission} state={state} stats={stats} onPause={() => setState((current) => current === 'paused' ? 'active' : 'paused')} onEnd={() => {
-      setStats((current) => ({ ...current, progress: 100 }))
+    return <JourneyScreen mission={activeMission} state={state} stats={stats} targetDistanceMetres={targetDistanceMetres ?? 0} movementMode={movementMode} locationStatus={locationStatus} onPause={() => setState((current) => current === 'paused' ? 'active' : 'paused')} onEnd={() => {
+      distanceMetresRef.current = targetDistanceMetres ?? 0
+      setStats((current) => ({ ...current, progress: 100, distanceMetres: targetDistanceMetres ?? current.distanceMetres }))
       setState('completing')
     }} />
   }
