@@ -12,9 +12,10 @@ export const NUTRITION_STANDARD_LABELS: Record<NutritionStandard, string> = {
   international: 'International',
 }
 
-// A logged food is evaluated as one of three daily eating occasions. The UI still
-// displays the full daily guidance; this fraction is only for item scoring/status.
-export const SINGLE_ITEM_DAILY_REFERENCE_FRACTION = 1 / 3
+// A logged food is evaluated against a substantial meal, rather than an equal
+// third of the daily total. This keeps an ordinary single meal from being
+// treated as excessive solely because daily guidance was split too narrowly.
+export const SINGLE_ITEM_DAILY_REFERENCE_FRACTION = 0.6
 
 export interface NutrientDefinition {
   key: NutrientKey
@@ -22,13 +23,13 @@ export interface NutrientDefinition {
   edoLabel: string
   offField: string
   unit: 'kcal' | 'g'
-  // Daily guidance shown in the comparison table.
+  // Daily guidance used by the Worker’s Japan-default meal scoring.
   referenceValue: number
-  // Single-meal comparison references for the client-side standard selector.
+  // Daily guidance for each selectable comparison standard.
   referenceValues: Record<NutritionStandard, number>
 }
 
-// A single adult meal baseline, derived from the Japanese daily framing over three meals.
+// Daily guidance values; the comparison UI and scoring derive one shared meal guide.
 export const NUTRIENT_DEFINITIONS: readonly NutrientDefinition[] = [
   { key: 'energy', label: 'Energy', edoLabel: '力飯値', offField: 'energy-kcal_100g', unit: 'kcal', referenceValue: 700, referenceValues: { japan: 700, fda: 666.7, eu: 666.7, international: 666.7 } },
   { key: 'protein', label: 'Protein', edoLabel: '御力札', offField: 'proteins_100g', unit: 'g', referenceValue: 20, referenceValues: { japan: 20, fda: 16.7, eu: 16.7, international: 16.7 } },
@@ -38,6 +39,16 @@ export const NUTRIENT_DEFINITIONS: readonly NutrientDefinition[] = [
   // The Worker currently tracks sodium only. “Micros” is an honest display-level proxy, not a full micronutrient estimate.
   { key: 'sodium', label: 'Micros', edoLabel: '微量札', offField: 'sodium_100g', unit: 'g', referenceValue: 0.8, referenceValues: { japan: 0.8, fda: 0.8, eu: 0.8, international: 0.7 } },
 ] as const
+
+export function perMealReferenceValue(definition: NutrientDefinition, standard: NutritionStandard): number {
+  return definition.referenceValues[standard] * SINGLE_ITEM_DAILY_REFERENCE_FRACTION
+}
+
+export function judgeGap(estimated: number, perMealReference: number): GapJudgment {
+  if (estimated < 0.85 * perMealReference) return 'Low'
+  if (estimated > 1.15 * perMealReference) return 'High'
+  return 'OK'
+}
 
 export interface NutritionRequest {
   description: string

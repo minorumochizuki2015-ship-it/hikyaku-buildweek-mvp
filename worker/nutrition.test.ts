@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { isNutritionReport, NUTRIENT_DEFINITIONS, SINGLE_ITEM_DAILY_REFERENCE_FRACTION, type NutrientKey } from '../shared/nutrition'
+import { isNutritionReport, NUTRIENT_DEFINITIONS, perMealReferenceValue, type NutrientKey } from '../shared/nutrition'
 import { buildNutritionReport, foodScoreFor, judgeGap } from './nutrition'
 
 type Amounts = Record<NutrientKey, number>
@@ -17,7 +17,7 @@ const foods: ReadonlyArray<{ name: string; amounts: Amounts }> = [
 const balancedSingleItem: Amounts = Object.fromEntries(
   NUTRIENT_DEFINITIONS.map((nutrient) => [
     nutrient.key,
-    nutrient.referenceValue * SINGLE_ITEM_DAILY_REFERENCE_FRACTION,
+    perMealReferenceValue(nutrient, 'japan'),
   ]),
 ) as Amounts
 
@@ -37,23 +37,37 @@ afterEach(() => {
 describe('nutrition scoring', () => {
   it('uses the single-item reference for the status pills', () => {
     const energy = NUTRIENT_DEFINITIONS[0]!
-    const singleItemReference = energy.referenceValue * SINGLE_ITEM_DAILY_REFERENCE_FRACTION
+    const singleItemReference = perMealReferenceValue(energy, 'japan')
 
-    expect(judgeGap(singleItemReference, energy.referenceValue)).toBe('OK')
-    expect(judgeGap(singleItemReference * 0.84, energy.referenceValue)).toBe('Low')
-    expect(judgeGap(singleItemReference * 1.16, energy.referenceValue)).toBe('High')
+    expect(judgeGap(singleItemReference, singleItemReference)).toBe('OK')
+    expect(judgeGap(singleItemReference * 0.84, singleItemReference)).toBe('Low')
+    expect(judgeGap(singleItemReference * 1.16, singleItemReference)).toBe('High')
+  })
+
+  it('keeps a realistic single meal out of an all-high judgment state', () => {
+    const meal: Amounts = { energy: 300, protein: 12, fat: 10, carbohydrates: 40, fiber: 6, sodium: 0.5 }
+    const judgments = NUTRIENT_DEFINITIONS.map((nutrient) => {
+      const displayedGuide = perMealReferenceValue(nutrient, 'japan')
+      const judgment = judgeGap(meal[nutrient.key], displayedGuide)
+      return { key: nutrient.key, amount: meal[nutrient.key], displayedGuide, judgment }
+    })
+
+    expect(judgments.every(({ judgment }) => judgment === 'High')).toBe(false)
+    for (const nutrient of judgments) {
+      if (nutrient.amount < nutrient.displayedGuide) expect(nutrient.judgment).not.toBe('High')
+    }
   })
 
   it('gives the measured food fixtures visibly different scores', () => {
     const scores = foods.map(({ name, amounts }) => ({ name, score: foodScoreFor(amounts) }))
 
     expect(scores).toEqual([
-      { name: 'onigiri', score: 43 },
-      { name: 'tofu', score: 44 },
-      { name: 'grilled salmon', score: 26 },
-      { name: 'miso soup', score: 30 },
-      { name: 'Kit Kat', score: 67 },
-      { name: 'Coca-Cola', score: 23 },
+      { name: 'onigiri', score: 54 },
+      { name: 'tofu', score: 39 },
+      { name: 'grilled salmon', score: 35 },
+      { name: 'miso soup', score: 24 },
+      { name: 'Kit Kat', score: 55 },
+      { name: 'Coca-Cola', score: 26 },
     ])
     expect(new Set(scores.map(({ score }) => score)).size).toBe(scores.length)
     expect(foodScoreFor(balancedSingleItem)).toBe(100)

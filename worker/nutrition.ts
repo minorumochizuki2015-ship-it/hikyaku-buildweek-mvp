@@ -1,7 +1,7 @@
 import {
+  judgeGap,
   NUTRIENT_DEFINITIONS,
-  SINGLE_ITEM_DAILY_REFERENCE_FRACTION,
-  type GapJudgment,
+  perMealReferenceValue,
   type NutrientEstimate,
   type NutrientKey,
   type NutritionAiAttempt,
@@ -9,6 +9,8 @@ import {
   type NutritionReport,
   type NutritionRequest,
 } from '../shared/nutrition'
+
+export { judgeGap } from '../shared/nutrition'
 
 interface Env {
   OPENAI_API_KEY?: string
@@ -58,19 +60,8 @@ function isNutrientKey(value: unknown): value is NutrientKey {
   return typeof value === 'string' && NUTRIENT_DEFINITIONS.some((nutrient) => nutrient.key === value)
 }
 
-function singleItemReferenceValue(dailyReference: number): number {
-  return dailyReference * SINGLE_ITEM_DAILY_REFERENCE_FRACTION
-}
-
-export function judgeGap(estimated: number, dailyReference: number): GapJudgment {
-  const singleItemReference = singleItemReferenceValue(dailyReference)
-  if (estimated < 0.85 * singleItemReference) return 'Low'
-  if (estimated > 1.15 * singleItemReference) return 'High'
-  return 'OK'
-}
-
-function nutrientCreditFor(amount: number, dailyReference: number): number {
-  const ratio = amount / singleItemReferenceValue(dailyReference)
+function nutrientCreditFor(amount: number, perMealReference: number): number {
+  const ratio = amount / perMealReference
   if (ratio >= 0.85 && ratio <= 1.15) return 1
   if (ratio < 0.85) return Math.max(0, ratio / 0.85)
 
@@ -82,7 +73,7 @@ function nutrientCreditFor(amount: number, dailyReference: number): number {
 
 export function foodScoreFor(amounts: Readonly<Record<NutrientKey, number>>): number {
   const totalCredit = NUTRIENT_DEFINITIONS.reduce(
-    (total, nutrient) => total + nutrientCreditFor(amounts[nutrient.key], nutrient.referenceValue),
+    (total, nutrient) => total + nutrientCreditFor(amounts[nutrient.key], perMealReferenceValue(nutrient, 'japan')),
     0,
   )
   return Math.round(100 * totalCredit / NUTRIENT_DEFINITIONS.length)
@@ -274,7 +265,7 @@ export async function buildNutritionReport(input: NutritionRequest, env: Env): P
     const aiValue = aiValues?.[definition.key]
     const amount = offValue ?? aiValue ?? roundAmount(deterministicPer100g[definition.key] * fallbackScale)
     const source: NutrientSource = offValue !== undefined ? 'open-food-facts' : aiValue !== undefined ? 'gpt-5.6-sol' : 'deterministic-fallback'
-    return { key: definition.key, amount, source, judgment: judgeGap(amount, definition.referenceValue) }
+    return { key: definition.key, amount, source, judgment: judgeGap(amount, perMealReferenceValue(definition, 'japan')) }
   })
   const distinctSources = new Set(nutrients.map((nutrient) => nutrient.source))
   const source = distinctSources.size === 1 ? nutrients[0]!.source : 'hybrid'

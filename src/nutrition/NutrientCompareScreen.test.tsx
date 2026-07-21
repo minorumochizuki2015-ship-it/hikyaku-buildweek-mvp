@@ -32,7 +32,7 @@ describe('NutrientCompareScreen', () => {
 
     expect(markup).toContain('24.1 g')
     expect(markup).toContain('688 kcal')
-    expect(markup).toContain('もう少し')
+    expect(markup).toContain('とりすぎ')
     expect(markup).toContain('<strong>バーコード</strong>')
     expect(markup).toContain('AI推定')
     expect(markup).toContain('カテゴリ推定')
@@ -43,8 +43,8 @@ describe('NutrientCompareScreen', () => {
     const japan = screen('ja', 'japan')
     const fda = screen('ja', 'fda')
 
-    expect(japan).toMatch(/data-testid="g07-reference-fat">18 g<\/td>/)
-    expect(fda).toMatch(/data-testid="g07-reference-fat">26 g<\/td>/)
+    expect(japan).toMatch(/data-testid="g07-reference-fat">10.8 g<\/td>/)
+    expect(fda).toMatch(/data-testid="g07-reference-fat">15.6 g<\/td>/)
     expect(fda).toContain('data-testid="g07-radar-today"')
   })
 
@@ -56,6 +56,9 @@ describe('NutrientCompareScreen', () => {
     expect(japanese).toContain('栄養のバランスチャート')
     expect(english).toContain('Nutrition reference comparison')
     expect(english).toContain('Nutrition balance chart')
+    expect(japanese).toContain('1食あたりの目安')
+    expect(english).toContain('Per-meal guide')
+    expect(english).toContain('per-meal portion of the daily reference')
     expect(english).toContain('Achieved')
     expect(english).toContain('GPT-5.6 estimated 2 of 6 values')
   })
