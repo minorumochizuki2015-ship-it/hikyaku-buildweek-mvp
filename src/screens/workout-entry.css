@@ -18,7 +18,7 @@
 .workout-entry-header h1 {
   margin: 0;
   color: #f4c85e;
-  font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-family: var(--font-display);
   font-feature-settings: "palt";
   font-size: clamp(1.9rem, 10vw, 2.45rem);
   font-weight: 700;
@@ -50,13 +50,33 @@
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 4%);
 }
 
+/* The canonical boards put the section label inside the panel at top-left with
+   a small marker. As a default <legend> it notched the panel's own border and
+   floated half-outside it, which is what made these read as browser fieldsets. */
 .workout-entry-panel legend {
-  padding: 0 4px;
+  /* display:block/flex is enough to take the legend out of its default
+     border-notching rendering. float:left also did that but pulled the grid
+     children out of flow, which stacked every chip row on the right edge. */
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+  padding: 0;
   color: #f7d25d;
-  font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-family: var(--font-display);
   font-size: .94rem;
-  font-weight: 800;
-  letter-spacing: .05em;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.workout-entry-panel legend::before {
+  width: 3px;
+  height: 14px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  background: linear-gradient(#ffd878, #c9962c);
+  content: '';
 }
 
 .workout-entry-setting-row {
@@ -165,14 +185,14 @@
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, #6846a1, #201339 67%);
   color: #ffe889;
-  font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-family: var(--font-display);
   font-size: 1.25rem;
   font-weight: 900;
 }
 
 .workout-entry-contract-goal { min-width: 0; }
 .workout-entry-contract-goal > span { color: #f7d25d; font-size: .61rem; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
-.workout-entry-contract-goal strong { display: block; overflow: hidden; margin-top: 2px; color: #fffaf0; font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif; font-size: .93rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.workout-entry-contract-goal strong { display: block; overflow: hidden; margin-top: 2px; color: #fffaf0; font-family: var(--font-display); font-size: .93rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 .workout-entry-contract-goal p { overflow: hidden; margin: 3px 0 0; color: #d4cddd; font-size: .64rem; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
 
 .workout-entry-contract-route {
@@ -212,7 +232,7 @@
   background: linear-gradient(145deg, #623a97, #2c194b);
   box-shadow: inset 0 0 0 1px rgb(255 238 168 / 22%), 0 5px 15px rgb(0 0 0 / 30%);
   color: #ffe889;
-  font-family: Georgia, "Hiragino Mincho ProN", "Yu Mincho", serif;
+  font-family: var(--font-display);
   font-size: 1.22rem;
   font-weight: 900;
   letter-spacing: .05em;
@@ -228,4 +248,28 @@
 
 @media (prefers-reduced-motion: reduce) {
   .workout-entry-choice span { transition-duration: .01ms; }
+}
+
+/* The canonical setup board sets its title over a seigaiha wave band with a few
+   petals, which is what stops the screen opening on a bare centred heading. The
+   pattern is drawn in CSS — no image request, no CSP risk. */
+.workout-entry-header {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0 0 18px 18px;
+  background:
+    radial-gradient(90% 120% at 50% -30%, rgb(156 120 255 / 30%), transparent 62%),
+    repeating-radial-gradient(circle at 50% 100%, transparent 0 12px, rgb(244 185 66 / 9%) 12px 13px, transparent 13px 26px);
+  background-size: auto, 52px 52px;
+  background-position: center, center bottom;
+}
+
+.workout-entry-header::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(244 185 66 / 55%), transparent);
+  content: '';
 }
