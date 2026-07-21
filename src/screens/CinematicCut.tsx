@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import './cinematic-cut.css'
 
 export type CinematicCutId = 'departure' | 'arrival'
@@ -25,7 +25,6 @@ export interface CinematicCutProps {
 }
 
 export function CinematicCut({ id, locale, onDone }: CinematicCutProps) {
-  const videoRef = useRef<HTMLVideoElement | null>(null)
   const [done, setDone] = useState(false)
 
   // A cut that fails to load, is blocked by autoplay policy, or is disabled by
@@ -39,11 +38,9 @@ export function CinematicCut({ id, locale, onDone }: CinematicCutProps) {
   useEffect(() => {
     const reduced = typeof window !== 'undefined'
       && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reduced) {
-      finish()
-      return
-    }
-    const timer = window.setTimeout(finish, 9000)
+    // Deferred rather than called inline: finishing synchronously inside the
+    // effect would set state during the same commit and cascade a re-render.
+    const timer = window.setTimeout(finish, reduced ? 0 : 9000)
     return () => window.clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
@@ -51,7 +48,6 @@ export function CinematicCut({ id, locale, onDone }: CinematicCutProps) {
   return (
     <div className="cinematic-cut" role="presentation" lang={locale}>
       <video
-        ref={videoRef}
         key={id}
         className="cinematic-cut__video"
         src={cinematicSourceFor(id)}
