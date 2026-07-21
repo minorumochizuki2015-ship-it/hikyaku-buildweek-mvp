@@ -18,6 +18,7 @@ import { distanceTargetMetres, rivalDistanceAtElapsedSeconds, type MovementMode,
 import { checkpointEndpoints, checkpointRouteState } from './checkpointRoute'
 import { ArrivalSeal, buildSealSummary, formatSealDate, sealCanvasDataUrl, type ArrivalSealData } from './ArrivalSeal'
 import { NutritionFlow } from './nutrition/NutritionFlow'
+import { CinematicCut, type CinematicCutId } from './screens/CinematicCut'
 import { TownHomeScreen, type TownHomeGoal, type TownHomeParameter } from './screens/TownHomeScreen'
 import { WorkoutEntryScreen } from './screens/WorkoutEntryScreen'
 import { GoyoDetailScreen, type GoyoCheckpoint, type GoyoDuty, type GoyoGoal, type GoyoTownEffect } from './screens/GoyoDetailScreen'
@@ -681,6 +682,8 @@ export default function App() {
   const [availableMinutes, setAvailableMinutes] = useState<AvailableMinutes>(10)
   const [movementMode, setMovementMode] = useState<MovementMode>('demo')
   const [locationStatus, setLocationStatus] = useState('')
+  const [cinematic, setCinematic] = useState<CinematicCutId | null>(null)
+  const playedCuts = useRef<Set<CinematicCutId>>(new Set())
   const distanceMetresRef = useRef(0)
 
   useEffect(() => {
@@ -691,6 +694,22 @@ export default function App() {
     if (state !== 'ready') return
     const start = window.setTimeout(() => setState('active'), 500)
     return () => window.clearTimeout(start)
+  }, [state])
+
+  /*
+   * The two story cuts overlay the flow rather than sitting inside the state
+   * machine, so a cut that fails to play cannot strand the courier: the journey
+   * has already advanced underneath it. Each fires once per session.
+   */
+  useEffect(() => {
+    if (state === 'ready' && !playedCuts.current.has('departure')) {
+      playedCuts.current.add('departure')
+      setCinematic('departure')
+    }
+    if (state === 'completed' && !playedCuts.current.has('arrival')) {
+      playedCuts.current.add('arrival')
+      setCinematic('arrival')
+    }
   }, [state])
 
   useEffect(() => {
@@ -922,6 +941,7 @@ export default function App() {
       onTabSelect={selectBottomNavTab}
     >
       {content}
+      {cinematic && <CinematicCut id={cinematic} locale={locale} onDone={() => setCinematic(null)} />}
     </AppShell>
   )
 }
