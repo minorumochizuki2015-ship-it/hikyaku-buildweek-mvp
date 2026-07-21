@@ -1,0 +1,212 @@
+.g07-town-delivery {
+  min-height: 100%;
+  padding: 14px 14px 70px;
+  overflow: hidden;
+  background: radial-gradient(120% 60% at 50% 0%, #2a1750 0%, #1a0f33 45%, #120a26 100%);
+  color: #f2ecdf;
+  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+}
+
+.g07-town-delivery__header {
+  position: relative;
+  margin-bottom: 11px;
+  text-align: center;
+}
+
+.g07-town-delivery__header h1 {
+  margin: 0;
+  color: #f6e3ac;
+  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-size: 1.12rem;
+  letter-spacing: .02em;
+  line-height: 1.45;
+}
+
+.g07-town-delivery__header p {
+  margin: 2px 0 0;
+  color: #c3b2dd;
+  font-size: .66rem;
+  line-height: 1.5;
+}
+
+.g07-town-delivery__card {
+  margin-bottom: 9px;
+  padding: 10px 11px;
+  border: 1px solid rgb(214 178 96 / 34%);
+  border-radius: 9px;
+  background: rgb(52 30 92 / 48%);
+}
+
+.g07-town-delivery__card > h2 {
+  margin: 0 0 8px;
+  color: #e6cf95;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.45;
+}
+
+.g07-town-delivery__effects,
+.g07-town-delivery__summary {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.g07-town-delivery__effect-row {
+  display: grid;
+  grid-template-columns: minmax(0, auto) auto minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+}
+
+.g07-town-delivery__effect-row:last-child {
+  border-bottom: 0;
+}
+
+.g07-town-delivery__chip {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 4px;
+  color: #e8e0f2;
+  font-size: .6rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.g07-town-delivery__chip-icon {
+  font-size: .85rem;
+}
+
+.g07-town-delivery__status {
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: .53rem;
+  font-weight: 800;
+}
+
+.g07-town-delivery__status--ok {
+  border: 1px solid rgb(96 190 140 / 55%);
+  background: rgb(96 190 140 / 22%);
+  color: #8fe0b6;
+}
+
+.g07-town-delivery__status--low {
+  border: 1px solid rgb(226 154 66 / 58%);
+  background: rgb(226 154 66 / 22%);
+  color: #f0be7c;
+}
+
+.g07-town-delivery__status--high {
+  border: 1px solid rgb(229 138 147 / 58%);
+  background: rgb(229 138 147 / 18%);
+  color: #ffbdc4;
+}
+
+.g07-town-delivery__effect-arrow {
+  color: #c3b2dd;
+  font-size: .62rem;
+}
+
+.g07-town-delivery__effect-label {
+  min-width: 0;
+  color: #c3b2dd;
+  font-size: .6rem;
+  line-height: 1.35;
+}
+
+.g07-town-delivery__magnitude {
+  color: #8fe0b6;
+  font-size: .6rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.g07-town-delivery__magnitude--muted {
+  color: #827694;
+}
+
+.g07-town-delivery__card--town {
+  padding: 9px;
+}
+
+.g07-town-delivery__scene {
+  position: relative;
+  display: grid;
+  height: 150px;
+  overflow: hidden;
+  place-items: center;
+  border-radius: 7px;
+  background: linear-gradient(#3a2166, #1d1038);
+}
+
+.g07-town-delivery__scene img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.g07-town-delivery__scene-description {
+  position: absolute;
+  inset: auto 8px 8px;
+  padding: 3px 6px;
+  border-radius: 3px;
+  background: rgb(18 10 38 / 68%);
+  color: #e8e0f2;
+  font-size: .52rem;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.g07-town-delivery__summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 2px;
+  text-align: center;
+}
+
+.g07-town-delivery__summary li {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  padding: 7px 3px;
+  border: 1px solid rgb(214 178 96 / 24%);
+  border-radius: 7px;
+  background: rgb(46 26 82 / 50%);
+  color: #c3b2dd;
+  font-size: .53rem;
+  line-height: 1.35;
+}
+
+.g07-town-delivery__summary li > span:first-child {
+  margin-bottom: 2px;
+  font-size: 1.1rem;
+}
+
+.g07-town-delivery__summary strong {
+  display: block;
+  margin-top: 2px;
+  color: #8fe0b6;
+  font-size: .6rem;
+}
+
+.g07-town-delivery :focus-visible {
+  outline: 3px solid #f6e3ac;
+  outline-offset: 3px;
+}
+
+@media (max-width: 359px) {
+  .g07-town-delivery__effect-row {
+    gap: 4px;
+  }
+
+  .g07-town-delivery__chip,
+  .g07-town-delivery__effect-label,
+  .g07-town-delivery__magnitude {
+    font-size: .55rem;
+  }
+}

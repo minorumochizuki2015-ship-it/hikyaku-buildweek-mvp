@@ -1,0 +1,152 @@
+.g07-tomorrow-screen {
+  min-height: 100dvh;
+  padding: 14px 14px calc(70px + env(safe-area-inset-bottom));
+  overflow: hidden;
+  color: #f2ecdf;
+  background: radial-gradient(120% 60% at 50% 0%, #2a1750 0%, #1a0f33 45%, #120a26 100%);
+  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+}
+
+.g07-tomorrow-header {
+  margin-bottom: 11px;
+  text-align: center;
+}
+
+.g07-tomorrow-header h1 {
+  margin: 0;
+  color: #f6e3ac;
+  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-size: 1.12rem;
+  line-height: 1.3;
+  letter-spacing: .02em;
+}
+
+.g07-tomorrow-header p {
+  margin: 2px 0 0;
+  color: #c3b2dd;
+  font-size: .66rem;
+  line-height: 1.5;
+}
+
+.g07-tomorrow-card {
+  margin-bottom: 9px;
+  padding: 10px 11px;
+  border: 1px solid rgb(214 178 96 / 34%);
+  border-radius: 9px;
+  background: rgb(52 30 92 / 48%);
+}
+
+.g07-tomorrow-card h2 {
+  margin: 0 0 8px;
+  color: #e6cf95;
+  font-family: inherit;
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  line-height: 1.35;
+}
+
+.g07-recommendation {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.g07-recommendation img {
+  display: block;
+  width: 76px;
+  height: 76px;
+  border: 1px solid rgb(214 178 96 / 40%);
+  border-radius: 8px;
+  background: linear-gradient(135deg, #49335f, #24173f);
+  object-fit: cover;
+}
+
+.g07-recommendation p,
+.g07-card-copy {
+  margin: 0;
+  color: #e8e0f2;
+  font-size: .66rem;
+  line-height: 1.6;
+}
+
+.g07-recommendation strong {
+  color: #f0be7c;
+}
+
+.g07-recommendation strong span {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.g07-town-copy {
+  margin-bottom: 6px;
+}
+
+.g07-button {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px;
+  border-radius: 7px;
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 800;
+  line-height: 1.25;
+  text-align: center;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.g07-button-gold {
+  border: 1px solid #f0dcae;
+  background: linear-gradient(#e9d199, #c9a64f);
+  color: #2b1c05;
+}
+
+.g07-button-ghost {
+  border: 1px solid rgb(214 178 96 / 40%);
+  background: rgb(72 44 122 / 60%);
+  color: #f2ecdf;
+}
+
+.g07-button-plain {
+  border: 1px solid rgb(255 255 255 / 22%);
+  background: transparent;
+  color: #d5c8ea;
+}
+
+.g07-button:hover {
+  transform: translateY(-1px);
+}
+
+.g07-button-gold:hover {
+  background: linear-gradient(#f3deb0, #d3b05a);
+}
+
+.g07-button-ghost:hover {
+  border-color: rgb(214 178 96 / 72%);
+  background: rgb(82 51 136 / 76%);
+}
+
+.g07-button-plain:hover {
+  border-color: rgb(255 255 255 / 46%);
+  background: rgb(255 255 255 / 6%);
+}
+
+.g07-button:focus-visible {
+  outline: 3px solid #f6e3ac;
+  outline-offset: 3px;
+}
+
+.g07-tomorrow-actions {
+  display: grid;
+  gap: 0;
+}
+
+@media (min-width: 540px) {
+  .g07-tomorrow-screen {
+    max-width: 375px;
+    margin: 0 auto;
+  }
+}
