@@ -28,8 +28,10 @@ describe('WorkoutEntryScreen', () => {
 
     expect(accepted).toContain(duty.name)
     expect(accepted).toContain(duty.route)
-    expect(accepted).toContain('1,200 m')
-    expect(none).not.toContain('workout-entry-destination')
+    expect(accepted).toContain('workout-entry-contract')
+    expect(accepted).toContain('Nihonbashi')
+    expect(accepted).toContain('240 m')
+    expect(none).not.toContain('workout-entry-contract')
     expect(none).not.toContain('Accepted duty')
   })
 
@@ -49,18 +51,17 @@ describe('WorkoutEntryScreen', () => {
   it('uses a Japanese-only visible interface when Japanese is selected', () => {
     const screen = renderScreen('ja')
 
-    expect(screen).toContain('出立の支度')
-    expect(screen).toContain('歩ける時間')
+    expect(screen).toContain('巡行設定')
+    expect(screen).toContain('ランナー向け')
     expect(screen).toContain('デモで進む')
-    expect(screen).toContain('御用へ戻る')
-    expect(screen).not.toContain('Set out')
-    expect(screen).not.toContain('Available minutes')
+    expect(screen).toContain('巡行を開始')
+    expect(screen).not.toContain('Begin Junko')
+    expect(screen).not.toContain('Runner settings')
   })
 
-  it('disables the primary action and keeps the secondary back action during generation', () => {
+  it('disables the primary action during generation', () => {
     const screen = renderScreen('en', duty, true)
 
     expect(screen).toMatch(/<button[^>]*disabled[^>]*>Preparing your mission…<\/button>/)
-    expect(screen).toContain('Back to Goyo')
   })
 })
