@@ -8,7 +8,7 @@
 .town-growth > h2 {
   margin: 0 3px 8px;
   color: #fff1c7;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: .76rem;
   font-weight: 700;
   line-height: 1.4;
@@ -110,7 +110,7 @@
   background: rgb(12 16 34 / 92%);
   box-shadow: 0 2px 8px rgb(0 0 0 / 42%);
   color: #f7f2e8;
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: var(--font-ui);
   font-size: .57rem;
   line-height: 1.35;
   text-align: left;

@@ -7,13 +7,13 @@
   padding: 16px 16px 86px;
   background: radial-gradient(circle at 84% 2%, rgb(244 185 66 / 12%), transparent 25%), #0c1022;
   color: #f7f2e8;
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: var(--font-ui);
 }
 
 .record-book__header { display: flex; gap: 11px; align-items: center; margin-bottom: 14px; }
-.record-book__crest { display: grid; width: 40px; height: 40px; flex: none; place-items: center; border: 1px solid rgb(244 185 66 / 55%); border-radius: 50%; background: radial-gradient(circle at 50% 35%, #6b4bb0, #2b1a52); color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .95rem; }
+.record-book__crest { display: grid; width: 40px; height: 40px; flex: none; place-items: center; border: 1px solid rgb(244 185 66 / 55%); border-radius: 50%; background: radial-gradient(circle at 50% 35%, #6b4bb0, #2b1a52); color: #f7d98a; font-family: var(--font-display); font-size: .95rem; }
 .record-book__eyebrow { margin: 0 0 2px; color: #b9b2c9; font-size: .58rem; font-weight: 800; letter-spacing: .12em; }
-.record-book h1, .record-book h2, .record-book h3 { margin: 0; font-family: Georgia, "Hiragino Mincho ProN", serif; }
+.record-book h1, .record-book h2, .record-book h3 { margin: 0; font-family: var(--font-display); }
 .record-book h1 { color: #fff1c7; font-size: 1.35rem; line-height: 1.2; }
 .record-book h2 { color: #fff1c7; font-size: .86rem; line-height: 1.35; }
 

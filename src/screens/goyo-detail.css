@@ -8,7 +8,7 @@
   padding: 12px 14px calc(92px + env(safe-area-inset-bottom));
   background: radial-gradient(120% 48% at 50% 0%, #31205a 0%, #18102e 48%, #0c0a19 100%);
   color: #f7f2e8;
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: var(--font-ui);
 }
 
 .goyo-detail__header {
@@ -22,7 +22,7 @@
 .goyo-detail__header h1 {
   margin: 0;
   color: #fff1c7;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: 1.08rem;
   font-weight: 700;
   text-align: center;
@@ -38,7 +38,7 @@
   border-radius: 9px;
   background: rgb(247 242 232 / 6%);
   color: #f7d98a;
-  font-family: Georgia, serif;
+  font-family: var(--font-display);
   font-size: 1.4rem;
   line-height: 1;
 }
@@ -79,7 +79,7 @@
   background: linear-gradient(#eadcbc, #c8b68c);
   box-shadow: 0 2px 5px rgb(0 0 0 / 34%);
   color: #3a2a10;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: .7rem;
   font-weight: 900;
   letter-spacing: .08em;
@@ -88,14 +88,14 @@
 
 .goyo-detail__contract-heading > div { min-width: 0; }
 .goyo-detail__contract-heading p { margin: 0 0 1px; color: #c9c0de; font-size: .58rem; font-weight: 800; letter-spacing: .08em; }
-.goyo-detail__contract h2 { margin: 0; color: #fff1c7; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .93rem; line-height: 1.35; }
+.goyo-detail__contract h2 { margin: 0; color: #fff1c7; font-family: var(--font-display); font-size: .93rem; line-height: 1.35; }
 .goyo-detail__contract-heading > div > span { display: block; margin-top: 3px; color: #d4cddd; font-size: .66rem; line-height: 1.42; }
 .goyo-detail__offline-demo-notice { margin: 8px 0 -3px 50px; color: #b9b2c9; font-size: .58rem; line-height: 1.4; }
 
 .goyo-detail__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 12px 0 0; }
 .goyo-detail__facts > div { padding: 7px 8px; border: 1px solid rgb(247 242 232 / 15%); border-radius: 7px; background: rgb(247 242 232 / 5%); }
 .goyo-detail__facts dt { color: #b9b2c9; font-size: .57rem; font-weight: 800; letter-spacing: .06em; }
-.goyo-detail__facts dd { margin: 2px 0 0; color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .79rem; font-variant-numeric: tabular-nums; }
+.goyo-detail__facts dd { margin: 2px 0 0; color: #f7d98a; font-family: var(--font-display); font-size: .79rem; font-variant-numeric: tabular-nums; }
 
 .goyo-detail__section { padding: 10px 11px; border-color: rgb(247 242 232 / 20%); }
 .goyo-detail__section h2 { margin: 0 0 8px; color: #e6cf95; font-size: .67rem; font-weight: 800; letter-spacing: .07em; }
@@ -127,7 +127,7 @@
 .goyo-detail__goal-missing { grid-column: 1 / -1; color: #b9b2c9; font-size: .65rem; }
 
 .goyo-detail__mikoto { display: flex; gap: 8px; align-items: flex-start; margin: 2px 2px 11px; padding: 8px 9px; border: 1px solid rgb(244 185 66 / 34%); border-radius: 9px; background: rgb(12 16 34 / 76%); }
-.goyo-detail__mikoto-seal { display: grid; width: 27px; height: 27px; flex: none; place-items: center; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #c3aaff, #4b2f86); color: #fff1c7; font-family: Georgia, serif; font-size: .72rem; }
+.goyo-detail__mikoto-seal { display: grid; width: 27px; height: 27px; flex: none; place-items: center; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #c3aaff, #4b2f86); color: #fff1c7; font-family: var(--font-display); font-size: .72rem; }
 .goyo-detail__mikoto p { margin: 0; color: #e8e4dc; font-size: .63rem; line-height: 1.45; }
 .goyo-detail__mikoto strong { display: block; margin-bottom: 1px; color: #f7d98a; font-size: .58rem; letter-spacing: .04em; }
 

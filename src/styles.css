@@ -1,8 +1,48 @@
+/* --- Type ---------------------------------------------------------------
+   Georgia was doing the display work and Avenir Next the interface work. Both
+   are fallbacks pretending to be a choice: Georgia has no Japanese at all, so
+   every mixed line silently split across two unrelated designs, and the pairing
+   read as a generic dark dashboard.
+
+   Shippori Mincho B1 and Zen Kaku Gothic New are one designed family each for
+   both scripts, so 巡行設定 and "Junko Setup" share a skeleton. They ship with
+   the app (OFL, see OFL.txt) rather than loading from a CDN — the full faces are
+   15 MB, so these are subset to the ~690 characters this app actually renders,
+   which is 149 KB instead. */
+@font-face {
+  font-family: "Shippori Mincho B1";
+  src: url("/assets/fonts/ShipporiMinchoB1-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Shippori Mincho B1";
+  src: url("/assets/fonts/ShipporiMinchoB1-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Zen Kaku Gothic New";
+  src: url("/assets/fonts/ZenKakuGothicNew-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Zen Kaku Gothic New";
+  src: url("/assets/fonts/ZenKakuGothicNew-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
 :root {
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-ui: "Zen Kaku Gothic New", "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+
+  font-family: var(--font-ui);
   color: #f7f2e8;
   background: #0c1022;
   font-synthesis: none;
+  font-feature-settings: "palt" 1;
 }
 
 * { box-sizing: border-box; }
@@ -20,7 +60,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #f4b942; outline-
 }
 
 .eyebrow { margin: 0 0 8px; color: #f7d98a; font-size: .68rem; font-weight: 800; letter-spacing: .14em; }
-h1, h2 { margin: 0; font-family: Georgia, "Hiragino Mincho ProN", serif; font-weight: 700; }
+h1, h2 { margin: 0; font-family: var(--font-display); font-weight: 700; }
 h1 { font-size: clamp(2rem, 9vw, 3.3rem); line-height: 1.03; letter-spacing: -.03em; }
 h2 { font-size: 1.7rem; line-height: 1.3; }
 
@@ -38,7 +78,7 @@ h2 { font-size: 1.7rem; line-height: 1.3; }
   border: 1px solid #ffe6a3;
   background: linear-gradient(180deg, #ffd878 0%, #f4b942 52%, #d99b2c 100%);
   color: #21180e;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   box-shadow: 0 4px 0 #8f6416, 0 10px 22px rgb(0 0 0 / 42%), inset 0 1px 0 rgb(255 255 255 / 60%);
 }
 .primary-button:hover:not(:disabled) { background: linear-gradient(180deg, #ffe6a3 0%, #ffd878 52%, #e0a634 100%); transform: translateY(-1px); box-shadow: 0 5px 0 #8f6416, 0 13px 26px rgb(0 0 0 / 46%), inset 0 1px 0 rgb(255 255 255 / 70%); }
@@ -56,7 +96,7 @@ h2 { font-size: 1.7rem; line-height: 1.3; }
     linear-gradient(145deg, #171631 0%, #0c1022 68%);
 }
 .masthead { display: flex; align-items: flex-start; gap: 13px; }
-.brand-mark { display: grid; width: 42px; height: 42px; place-items: center; flex: 0 0 auto; border: 1px solid #f7d98a; border-radius: 50%; background: #281f4a; color: #f7d98a; font-family: Georgia, serif; font-size: 1.35rem; font-weight: 800; }
+.brand-mark { display: grid; width: 42px; height: 42px; place-items: center; flex: 0 0 auto; border: 1px solid #f7d98a; border-radius: 50%; background: #281f4a; color: #f7d98a; font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; }
 /* Full-bleed hero scene (no trading-card frame). The illustration runs edge to edge
    as an integrated night-bridge scene; the intro copy sits just below it. */
 .dispatch-hero { position: relative; margin: 8px -20px 16px; }
@@ -67,11 +107,36 @@ h2 { font-size: 1.7rem; line-height: 1.3; }
 .seal { display: inline-grid; width: 54px; height: 54px; place-items: center; border: 1px solid #9c78ff; border-radius: 50%; color: #c8b7ff; font-size: .61rem; font-weight: 800; letter-spacing: .08em; line-height: 1.2; text-align: center; transform: rotate(-9deg); }
 .dispatch-form { display: grid; gap: 18px; margin-top: auto; }
 fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
-legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+/* Five stacked section labels, every one of them uppercase, letterspaced and the
+   same weight, is the single loudest generic-dashboard tell in the app. They are
+   set in the display face at reading size instead, sentence case, each marked by
+   a short gold rule — a label you read rather than a header you skip. */
+legend, .name-field > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+  color: #f2e8d6;
+  font-family: var(--font-display);
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  line-height: 1.3;
+}
+legend::before, .name-field > span::before {
+  width: 3px;
+  height: 15px;
+  flex: 0 0 auto;
+  border-radius: 2px;
+  background: linear-gradient(#ffd878, #c9962c);
+  content: '';
+}
 .courier-picker { display: flex; gap: 9px; padding: 1px 1px 8px; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scrollbar-color: #725da5 transparent; }
 .courier-card { display: grid; min-height: 126px; align-content: start; gap: 5px; padding: 12px; border: 1px solid rgb(247 242 232 / 27%); border-radius: 12px; background: linear-gradient(145deg, rgb(247 242 232 / 10%), rgb(156 120 255 / 7%)); color: #f7f2e8; cursor: pointer; transition: .18s ease; }
-.courier-card strong { color: #fff1c7; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .98rem; line-height: 1.25; }
-.courier-card small { color: #f7d98a; font-size: .67rem; font-weight: 900; letter-spacing: .07em; text-transform: uppercase; }
+.courier-card strong { color: #fff1c7; font-family: var(--font-display); font-size: .98rem; line-height: 1.25; }
+/* This line is a long attribute string, not a label. In caps it wrapped to two
+   shouting lines directly under the courier's name and buried it. */
+.courier-card small { color: #f7d98a; font-size: .68rem; font-weight: 700; letter-spacing: .01em; line-height: 1.45; }
 .courier-card em { color: #d4cddd; font-size: .72rem; font-style: normal; line-height: 1.3; }
 .courier-card i { margin-top: auto; color: #c9c0de; font-size: .65rem; font-style: normal; line-height: 1.35; }
 .name-field em { color: #bebac7; font-weight: 600; font-style: normal; text-transform: none; letter-spacing: 0; }
@@ -142,7 +207,7 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
   border: 1px solid rgb(244 185 66 / 70%);
   border-radius: 7px;
   color: #f7d98a;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: .74rem;
   font-weight: 800;
   line-height: 1.15;
@@ -162,7 +227,7 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .order-target strong {
   margin-left: auto;
   color: #fffaf0;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: 2.5rem;
   font-variant-numeric: tabular-nums;
   line-height: .9;
@@ -191,8 +256,8 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .ring-track { stroke: rgb(9 11 26 / 72%); }
 .ring-value { stroke: #f4b942; stroke-linecap: round; transition: stroke-dasharray .7s linear; }
 .ring-copy { display: grid; width: 63%; aspect-ratio: 1; place-content: center; border: 1px solid rgb(247 242 232 / 46%); border-radius: 50%; background: rgb(12 16 34 / 72%); text-align: center; box-shadow: inset 0 0 30px rgb(156 120 255 / 16%); }
-.ring-copy strong { color: #fffaf0; font-family: Georgia, serif; font-size: clamp(2.5rem, 13vw, 4.2rem); line-height: .83; letter-spacing: -.06em; }
-.ring-copy small { margin-left: 3px; color: #f7d98a; font-family: "Avenir Next", sans-serif; font-size: .32em; letter-spacing: 0; }
+.ring-copy strong { color: #fffaf0; font-family: var(--font-display); font-size: clamp(2.5rem, 13vw, 4.2rem); line-height: .83; letter-spacing: -.06em; }
+.ring-copy small { margin-left: 3px; color: #f7d98a; font-family: var(--font-ui); font-size: .32em; letter-spacing: 0; }
 .ring-copy span { margin-top: 9px; color: #e8e4dc; font-size: .67rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
 .checkpoint-route { position: relative; margin: 0 0 14px; padding: 13px 2px 9px; border-block: 1px solid rgb(247 217 138 / 30%); background: linear-gradient(90deg, rgb(23 22 49 / 92%), rgb(32 28 58 / 92%), rgb(23 22 49 / 92%)); }
 /* The rail is unlit road that the courier lights as they walk it. --route-progress
@@ -219,10 +284,10 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .checkpoint-next { min-height: 1.4em; margin: 11px 0 0; color: #d4cddd; font-size: .76rem; font-weight: 700; line-height: 1.45; text-align: center; }
 .checkpoint-next strong { color: #f7d98a; }
 .mission-message { min-height: 74px; padding: 15px 16px; border-left: 3px solid #f4b942; border-radius: 0 10px 10px 0; background: #191d36; }
-.mission-message p { margin: 0; color: #f7f2e8; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.04rem; line-height: 1.55; }
+.mission-message p { margin: 0; color: #f7f2e8; font-family: var(--font-display); font-size: 1.04rem; line-height: 1.55; }
 .mission-message .location-status { margin-top: 7px; color: #f7d98a; font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", sans-serif; font-size: .78rem; font-weight: 700; }
 .empowered-line { margin: 11px 2px 0; color: #d4c6ff; font-size: .78rem; font-weight: 700; line-height: 1.45; }
-.journey-detail { display: flex; justify-content: space-between; gap: 12px; margin: 15px 2px; color: #c9c5d0; font-size: .75rem; letter-spacing: .04em; text-transform: uppercase; }
+.journey-detail { display: flex; justify-content: space-between; gap: 12px; margin: 15px 2px; color: #c9c5d0; font-size: .75rem; letter-spacing: .02em; }
 .journey-detail strong { margin-right: 4px; color: #f7d98a; font-size: .98rem; }
 .rival-comparison { margin: 0 2px 15px; color: #e8e4dc; font-size: .87rem; line-height: 1.5; }
 .rival-comparison strong { color: #f7d98a; }
@@ -240,25 +305,25 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .arrival-header { position: relative; z-index: 1; display: grid; min-height: 300px; align-content: end; padding: 28px 20px; text-align: left; }
 .arrival-header .eyebrow { color: #ffe3a1; text-shadow: 0 1px 8px rgb(0 0 0 / 60%); }
 .arrival-header h1 { max-width: 340px; color: #fffaf0; text-shadow: 0 3px 18px rgb(0 0 0 / 72%); }
-.arrival-kicker { margin: 12px 0 0; max-width: 270px; color: #fff7e8; font-family: Georgia, "Hiragino Mincho ProN", serif; line-height: 1.5; text-shadow: 0 2px 9px rgb(0 0 0 / 72%); }
+.arrival-kicker { margin: 12px 0 0; max-width: 270px; color: #fff7e8; font-family: var(--font-display); line-height: 1.5; text-shadow: 0 2px 9px rgb(0 0 0 / 72%); }
 .arrival-seal { position: relative; margin: -26px 0 18px; padding: 5px; border-radius: 21px; background: linear-gradient(135deg, #f5ca70, #a92f2c 44%, #f5ca70); box-shadow: 0 16px 38px rgb(0 0 0 / 40%); }
 .arrival-seal-wrap { position: relative; }
 .simulated-distance-tag { position: absolute; bottom: 75px; left: 24%; padding: 3px 6px; border: 1px solid rgb(244 185 66 / 52%); border-radius: 999px; background: rgb(16 21 43 / 88%); color: #f7d98a; font-size: .52rem; font-weight: 900; letter-spacing: .06em; line-height: 1.2; }
 .seal-certificate { display: grid; min-height: 478px; padding: 18px 17px 14px; overflow: hidden; border: 1px solid rgb(255 232 177 / 72%); border-radius: 17px; background: radial-gradient(circle at 50% 42%, rgb(244 185 66 / 22%), transparent 39%), linear-gradient(145deg, #20172b, #10152b 67%); text-align: center; }
 .seal-brand, .seal-date { margin: 0; color: #f8d782; font-size: .64rem; font-weight: 900; letter-spacing: .17em; }
-.seal-mission { min-height: 2.7em; margin: 12px auto 5px; color: #fff3d5; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: clamp(1.15rem, 5vw, 1.48rem); font-weight: 700; line-height: 1.25; }
-.seal-courier { margin: 0; color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .9rem; font-weight: 800; line-height: 1.35; }
+.seal-mission { min-height: 2.7em; margin: 12px auto 5px; color: #fff3d5; font-family: var(--font-display); font-size: clamp(1.15rem, 5vw, 1.48rem); font-weight: 700; line-height: 1.25; }
+.seal-courier { margin: 0; color: #f7d98a; font-family: var(--font-display); font-size: .9rem; font-weight: 800; line-height: 1.35; }
 .seal-figure { margin: 3px 0 5px; color: #c9c5d0; font-size: .65rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .seal-stamp { display: grid; width: 184px; height: 184px; margin: 1px auto 10px; place-content: center; border: 5px double #ffc88b; border-radius: 50%; background: #bc3d32; color: #ffebbd; box-shadow: 0 0 0 7px rgb(188 61 50 / 24%), inset 0 0 0 9px rgb(93 22 24 / 18%); transform: rotate(-5deg); }
-.seal-stamp span { display: block; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 6.1rem; font-weight: 800; line-height: .78; }
+.seal-stamp span { display: block; font-family: var(--font-display); font-size: 6.1rem; font-weight: 800; line-height: .78; }
 .seal-stamp small { margin-top: 17px; font-size: .55rem; font-weight: 900; letter-spacing: .22em; }
-.seal-stamp b { margin-top: 5px; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .56rem; letter-spacing: .08em; }
-.seal-rank { margin: 0; color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.4rem; font-weight: 700; line-height: 1.25; }
+.seal-stamp b { margin-top: 5px; font-family: var(--font-display); font-size: .56rem; letter-spacing: .08em; }
+.seal-rank { margin: 0; color: #f7d98a; font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; line-height: 1.25; }
 .seal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 15px 0 11px; padding: 12px 0; border-block: 1px solid rgb(247 217 138 / 35%); }
-.seal-metrics span { min-width: 0; color: #d4cddd; font-size: .57rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.seal-metrics span { min-width: 0; color: #d4cddd; font-size: .57rem; font-weight: 800; letter-spacing: .03em; }
 .seal-metrics strong { display: block; margin-bottom: 4px; color: #fff0cb; font-size: .96rem; letter-spacing: 0; text-transform: none; }
 .epilogue { padding: 1px 0; }
-.epilogue > p:first-child { margin: 0; color: #f7f2e8; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.08rem; line-height: 1.65; }
+.epilogue > p:first-child { margin: 0; color: #f7f2e8; font-family: var(--font-display); font-size: 1.08rem; line-height: 1.65; }
 .rival-arrival-summary { margin: 17px 0 0; color: #f7d98a; font-weight: 700; line-height: 1.5; }
 .historical-note { margin: 17px 0 0; padding: 13px 14px; border-left: 3px solid #9c78ff; border-radius: 0 8px 8px 0; background: rgb(156 120 255 / 13%); color: #e8e4dc; font-size: .9rem; line-height: 1.6; }
 .historical-note strong { color: #d7caff; }
@@ -274,13 +339,13 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .nutrition-header > p:last-child { max-width: 430px; margin: 12px 0 0; color: #d4cddd; line-height: 1.55; }
 .nutrition-back { margin: 0 0 20px; padding: 0; border: 0; background: transparent; color: #f7d98a; font-size: .78rem; font-weight: 800; }
 .nutrition-form { display: grid; gap: 13px; padding: 16px; border: 1px solid rgb(247 217 138 / 30%); border-radius: 14px; background: rgb(247 242 232 / 6%); }
-.nutrition-form label { display: grid; gap: 7px; color: #e8e4dc; font-size: .76rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.nutrition-form label { display: grid; gap: 7px; color: #e8e4dc; font-size: .76rem; font-weight: 800; letter-spacing: .01em; font-family: var(--font-display); font-size: .92rem; }
 .nutrition-form input { width: 100%; min-height: 47px; padding: 0 12px; border: 1px solid rgb(247 242 232 / 30%); border-radius: 9px; background: #11162c; color: #fffaf0; }
 .nutrition-status { min-height: 1.4em; margin: 0; color: #f7d98a; font-weight: 700; line-height: 1.45; }
 .nutrition-report { display: grid; gap: 13px; }
 .nutrition-summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid rgb(244 185 66 / 46%); border-radius: 14px; background: linear-gradient(135deg, rgb(244 185 66 / 20%), rgb(156 120 255 / 12%)); }
 .nutrition-summary .eyebrow { margin-bottom: 2px; }
-.nutrition-summary > div > strong { color: #fff4ca; font-family: Georgia, serif; font-size: 3rem; line-height: .9; }
+.nutrition-summary > div > strong { color: #fff4ca; font-family: var(--font-display); font-size: 3rem; line-height: .9; }
 .nutrition-summary > div > span { margin-left: 4px; color: #e8e4dc; font-size: .82rem; font-weight: 800; }
 .nutrition-summary > p { display: grid; margin: 0; color: #d4cddd; font-size: .78rem; line-height: 1.45; text-align: right; }
 .nutrition-summary b { color: #fff3d5; }
@@ -288,7 +353,7 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .nutrition-note { margin: 0; color: #c9c5d0; font-size: .74rem; line-height: 1.45; }
 .nutrient-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
 .nutrient-list li { display: grid; grid-template-columns: 40px 1fr auto auto; gap: 9px; align-items: center; padding: 10px; border: 1px solid rgb(247 242 232 / 16%); border-radius: 10px; background: rgb(247 242 232 / 5%); }
-.nutrient-edo { color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: .66rem; font-weight: 800; line-height: 1.15; }
+.nutrient-edo { color: #f7d98a; font-family: var(--font-display); font-size: .66rem; font-weight: 800; line-height: 1.15; }
 .nutrient-list div { display: grid; gap: 3px; }
 .nutrient-list strong { color: #fffaf0; font-size: .87rem; }
 .nutrient-list small { color: #c9c5d0; font-size: .62rem; line-height: 1.2; }
@@ -388,7 +453,7 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 /* NutritionScreen's comparison controls, bars, and lightweight SVG radar. */
 select { font: inherit; }
 select:focus-visible { outline: 3px solid #f4b942; outline-offset: 3px; }
-.nutrition-standard { display: grid; gap: 7px; color: #e8e4dc; font-size: .73rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.nutrition-standard { display: grid; gap: 7px; color: #e8e4dc; font-size: .73rem; font-weight: 800; letter-spacing: .01em; font-family: var(--font-display); font-size: .88rem; }
 .nutrition-standard select { width: 100%; min-height: 44px; padding: 0 11px; border: 1px solid rgb(247 217 138 / 48%); border-radius: 9px; background: #11162c; color: #fffaf0; }
 .nutrition-nutrient-list > li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 11px; padding: 11px; }
 .nutrition-nutrient-heading { display: grid; grid-column: 1 / -1; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 9px; align-items: center; }
@@ -411,7 +476,7 @@ select:focus-visible { outline: 3px solid #f4b942; outline-offset: 3px; }
 .nutrition-radar-polygon { fill: rgb(102 202 142 / 28%); stroke: #f4b942; stroke-linejoin: round; stroke-width: 2; }
 .nutrition-radar-label { fill: #e8e4dc; font-size: 6px; font-weight: 800; text-anchor: middle; }
 .nutrition-advice { padding: 14px 15px; border-left: 3px solid #9c78ff; border-radius: 0 10px 10px 0; background: rgb(156 120 255 / 12%); }
-.nutrition-advice p:last-child { margin: 0; color: #f7f2e8; font-family: Georgia, "Hiragino Mincho ProN", serif; line-height: 1.5; }
+.nutrition-advice p:last-child { margin: 0; color: #f7f2e8; font-family: var(--font-display); line-height: 1.5; }
 .nutrition-town-contribution { margin: 0; padding: 11px 13px; border: 1px solid rgb(247 217 138 / 28%); border-radius: 10px; background: rgb(247 217 138 / 8%); color: #e8e4dc; font-size: .81rem; line-height: 1.45; }
 .nutrition-town-contribution strong { color: #f7d98a; }
 .nutrition-continue { margin-top: 2px; }

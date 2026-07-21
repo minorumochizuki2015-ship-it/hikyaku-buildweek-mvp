@@ -410,7 +410,7 @@ export function DispatchScreen({ locale, onGenerate, generating }: { locale: Loc
             choices above, so changing Energy moves the number live. */}
         <section className="order-panel" aria-label="Tonight's order">
           <header className="order-head">
-            <p className="eyebrow">ISSUED ORDER / 本日の御用</p>
+            <p className="eyebrow">ISSUED ORDER</p>
             <span className="order-seal" aria-hidden="true">御用</span>
           </header>
           <p className="order-target">

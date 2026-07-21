@@ -9,7 +9,7 @@
   overflow: hidden;
   background: radial-gradient(120% 60% at 50% 0%, #2a1750 0%, #1a0f33 45%, #120a26 100%);
   color: #f2ecdf;
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: var(--font-ui);
 }
 
 .g07-town-delivery__header {
@@ -21,7 +21,7 @@
 .g07-town-delivery__header h1 {
   margin: 0;
   color: #f6e3ac;
-  font-family: Georgia, "Hiragino Mincho ProN", serif;
+  font-family: var(--font-display);
   font-size: 1.12rem;
   letter-spacing: .02em;
   line-height: 1.45;
