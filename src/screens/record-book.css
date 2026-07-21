@@ -20,7 +20,13 @@
 .record-book__summary, .record-book__section, .record-book__empty { border: 1px solid rgb(247 242 232 / 22%); border-radius: 12px; background: linear-gradient(160deg, rgb(156 120 255 / 15%), rgb(12 16 34 / 25%)); }
 .record-book__summary { margin-bottom: 14px; overflow: hidden; }
 .record-book__summary > h2, .record-book__section > h2 { padding: 10px 12px; border-bottom: 1px solid rgb(247 242 232 / 14%); background: rgb(156 120 255 / 16%); }
-.record-book__summary dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 11px 9px; }
+/* Distance leads the session tally: it spans the row at display size while the
+   two counts sit beneath it as quiet supporting figures. Three equal cells made
+   the screen's whole purpose the smallest thing on it. */
+.record-book__summary dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; margin: 0; padding: 11px 9px; }
+.record-book__summary dl > div.is-lead { grid-column: 1 / -1; padding-bottom: 9px; border-bottom: 1px solid rgb(247 242 232 / 12%); }
+.record-book__summary dl > div.is-lead dd { color: #fffaf0; font-family: var(--font-display); font-size: 2.9rem; font-variant-numeric: tabular-nums; line-height: 1; letter-spacing: -.02em; }
+.record-book__summary dl > div.is-lead .record-book__mode-tag { display: block; width: fit-content; margin: 9px auto 0; }
 .record-book__summary dl > div { min-width: 0; padding: 3px 4px; text-align: center; }
 .record-book dt { color: #c9c0de; font-size: .58rem; line-height: 1.35; }
 .record-book dd { margin: 2px 0 0; color: #f7d98a; font-size: .76rem; font-variant-numeric: tabular-nums; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }

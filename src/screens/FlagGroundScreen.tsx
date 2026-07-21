@@ -39,7 +39,7 @@ const COPY = {
     stableCopy: 'Your ground is steady.',
     contestedCopy: 'Keep walking to strengthen your ground.',
     atRiskCopy: 'A short goyo can help reinforce your ground.',
-    previewTitle: 'Grounds opening later',
+    previewTitle: 'Grounds on this route',
     previewCopy: 'These grounds will open in a later chapter.',
     locked: 'Locked',
     walkAction: 'Walk a goyo',
@@ -60,7 +60,7 @@ const COPY = {
     stableCopy: '落とされる心配はほとんどありません。',
     contestedCopy: '互いに競っています。気を抜かずに！',
     atRiskCopy: '落とされる可能性が高い状態です。',
-    previewTitle: 'これから開く旗場',
+    previewTitle: '旗場の道',
     previewCopy: 'ほかの旗場は、次の章で開きます。',
     locked: 'ロック中',
     walkAction: '御用を歩く',
@@ -93,22 +93,15 @@ export function FlagGroundScreen({ courierFlagPower, locale, onWalk }: FlagGroun
         </div>
       </header>
 
+      {/* The ground you hold is a place, so show the place. The old panel drew a
+          flat disc with four grey cards on spokes and read as an org chart; this
+          is the canonical honjin art from the production asset library. */}
       <section className="flag-ground__district" aria-label={copy.personalLabel}>
-        <div className="flag-ground__routes" aria-hidden="true" />
-        <article className={`flag-ground__own-ground is-${state}`}>
-          <span className="flag-ground__flag" aria-hidden="true">⚑</span>
+        <img className="flag-ground__art" src="/assets/ground/honjin.png" alt="" aria-hidden="true" />
+        <div className="flag-ground__district-copy">
           <span className="flag-ground__own-label">{copy.personalLabel}</span>
           <strong>{copy.personalGround}</strong>
           <span className={`flag-ground__state-pill is-${state}`}>{stateLabel}</span>
-        </article>
-        <div className="flag-ground__locked-grounds" aria-label={copy.previewTitle}>
-          {copy.groundNames.map((name) => (
-            <div className="flag-ground__locked-ground" key={name}>
-              <span aria-hidden="true">🔒</span>
-              <strong>{name}</strong>
-              <small>{copy.locked}</small>
-            </div>
-          ))}
         </div>
       </section>
 
@@ -133,12 +126,23 @@ export function FlagGroundScreen({ courierFlagPower, locale, onWalk }: FlagGroun
         <p className="flag-ground__power-help">{copy.powerHelp}</p>
       </section>
 
-      <section className="flag-ground__preview" aria-labelledby="flag-ground-preview-title">
-        <span className="flag-ground__preview-lock" aria-hidden="true">🔒</span>
-        <div>
-          <h2 id="flag-ground-preview-title">{copy.previewTitle}</h2>
-          <p>{copy.previewCopy}</p>
-        </div>
+      {/* Four identical padlocks reading "Locked" said nothing about those places.
+          As a rail they say the one thing that matters: which comes next. */}
+      <section className="flag-ground__route" aria-labelledby="flag-ground-preview-title">
+        <h2 id="flag-ground-preview-title">{copy.previewTitle}</h2>
+        <ol className="flag-ground__stations">
+          <li className="flag-ground__station is-held">
+            <span className="flag-ground__station-node" aria-hidden="true">⚑</span>
+            <span className="flag-ground__station-name">{copy.personalGround}</span>
+          </li>
+          {copy.groundNames.map((name, index) => (
+            <li className={`flag-ground__station ${index === 0 ? 'is-next' : ''}`} key={name}>
+              <span className="flag-ground__station-node" aria-hidden="true">{index === 0 ? '⛩' : '·'}</span>
+              <span className="flag-ground__station-name">{name}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="flag-ground__route-note">{copy.previewCopy}</p>
       </section>
 
       {/* powerHelp is already printed under the gauge it explains; repeating it

@@ -27,10 +27,13 @@ describe('FlagGroundScreen', () => {
     expect(FLAG_GROUND_STATE_THRESHOLDS).toEqual({ contestedAt: 35, stableAt: 70 })
   })
 
-  it('uses a single language and keeps other grounds locked previews without fabricated league data', () => {
+  it('uses a single language and keeps other grounds unopened without fabricated league data', () => {
     const screen = render(50, 'ja')
 
-    for (const text of ['旗場', '日本橋本陣', '芝', '池袋', '品川', '新宿', 'ロック中']) expect(screen).toContain(text)
+    // The four other grounds are still shown as not yet open, but as stations on
+    // a route rather than four identical padlocks — so the assertion is on the
+    // note that says they open later, not on the old per-card 'ロック中' label.
+    for (const text of ['旗場', '日本橋本陣', '芝', '池袋', '品川', '新宿', '次の章で開きます']) expect(screen).toContain(text)
     for (const forbidden of ['rival', 'ranking', 'point', 'countdown', 'ライバル', 'ランキング', 'ポイント', 'カウントダウン']) expect(screen.toLowerCase()).not.toContain(forbidden)
     expect(screen).not.toContain('Flag ground')
   })

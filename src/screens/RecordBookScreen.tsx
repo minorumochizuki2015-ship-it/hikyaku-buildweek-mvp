@@ -102,7 +102,16 @@ export function RecordBookScreen({ runs, meals, locale, onOpenGoyo }: RecordBook
 
       <section className="record-book__summary" aria-labelledby="record-book-summary-title">
         <h2 id="record-book-summary-title">{text(copy.summary, locale)}</h2>
+        {/* Distance is what this screen exists to report, so it leads at display
+            size instead of sharing a row of three equal cells with the counts. */}
         <dl>
+          <div className="is-lead">
+            <dt>{text(copy.totalDistance, locale)}</dt>
+            <dd>
+              {formatDistance(totalDistance, locale)}
+              {includesSimulatedDistance && <span className="record-book__mode-tag">{text(copy.simulated, locale)}</span>}
+            </dd>
+          </div>
           <div>
             <dt>{text(copy.runs, locale)}</dt>
             <dd>{runs.length}</dd>
@@ -110,10 +119,6 @@ export function RecordBookScreen({ runs, meals, locale, onOpenGoyo }: RecordBook
           <div>
             <dt>{text(copy.meals, locale)}</dt>
             <dd>{meals.length}</dd>
-          </div>
-          <div>
-            <dt>{text(copy.totalDistance, locale)}</dt>
-            <dd>{formatDistance(totalDistance, locale)}{includesSimulatedDistance && <span className="record-book__mode-tag">{text(copy.simulated, locale)}</span>}</dd>
           </div>
         </dl>
       </section>

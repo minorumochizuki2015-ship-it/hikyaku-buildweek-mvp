@@ -21,38 +21,50 @@
 .flag-ground h1 { color: #fff1c7; font-size: 1.42rem; line-height: 1.18; }
 .flag-ground__lead { margin-top: 3px; color: #c9c0de; font-size: .68rem; line-height: 1.35; }
 
-/* 260px could not hold the layout it contains: the 144px home circle sits
-   centred while 64px locked cards pin to the top and bottom edges, so the north
-   card (Shiba) overlapped the circle. 330px is circle + both cards + breathing
-   room, measured rather than eyeballed. */
-.flag-ground__district { position: relative; min-height: 330px; overflow: hidden; margin-bottom: 12px; border: 1px solid rgb(247 217 138 / 32%); border-radius: 14px; background: linear-gradient(145deg, rgb(48 35 84 / 88%), rgb(15 21 45 / 92%)); box-shadow: inset 0 0 50px rgb(156 120 255 / 14%); }
-.flag-ground__district::before, .flag-ground__district::after { position: absolute; content: ""; pointer-events: none; }
-.flag-ground__district::before { inset: 0; opacity: .32; background-image: linear-gradient(30deg, transparent 48%, rgb(247 217 138 / 18%) 49%, transparent 50%), linear-gradient(150deg, transparent 48%, rgb(247 217 138 / 13%) 49%, transparent 50%); background-size: 42px 34px; }
-.flag-ground__district::after { inset: 24px; border: 1px solid rgb(247 242 232 / 10%); border-radius: 50%; }
-.flag-ground__routes { position: absolute; z-index: 1; top: 48%; left: 11%; width: 78%; height: 2px; background: linear-gradient(90deg, transparent, rgb(247 217 138 / 46%) 12% 88%, transparent); transform: rotate(28deg); }
-.flag-ground__routes::after { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: inherit; content: ""; transform: rotate(-56deg); }
-.flag-ground__own-ground { position: absolute; z-index: 2; top: 50%; left: 50%; display: grid; width: 144px; height: 144px; place-items: center; align-content: center; gap: 3px; border: 2px solid #9c78ff; border-radius: 50%; background: radial-gradient(circle at 50% 30%, #725aaa, #2b1d50 69%); box-shadow: 0 0 0 7px rgb(156 120 255 / 12%), 0 0 24px rgb(156 120 255 / 35%); color: #fffaf0; text-align: center; transform: translate(-50%, -50%); }
-.flag-ground__own-ground.is-stable { border-color: #73c19a; box-shadow: 0 0 0 7px rgb(102 202 142 / 12%), 0 0 24px rgb(102 202 142 / 28%); }
-.flag-ground__own-ground.is-contested { border-color: #e6ae4c; box-shadow: 0 0 0 7px rgb(244 185 66 / 12%), 0 0 24px rgb(244 185 66 / 28%); }
-.flag-ground__own-ground.is-at-risk { border-color: #eb7773; box-shadow: 0 0 0 7px rgb(235 119 115 / 12%), 0 0 24px rgb(235 119 115 / 28%); }
-.flag-ground__flag { color: #f7d98a; font-size: 2rem; line-height: .8; transform: translateX(-2px); }
-.flag-ground__own-label { color: #d4c6ff; font-size: .58rem; font-weight: 800; letter-spacing: .08em; }
-.flag-ground__own-ground strong { max-width: 116px; color: #fffaf0; font-family: var(--font-display); font-size: .9rem; line-height: 1.2; }
+/* The held ground is the subject of this screen, so it gets the top elevation:
+   the canonical honjin art with the name and state read over its lit base. */
+.flag-ground__district {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  margin-bottom: 12px;
+  border: 1px solid rgb(244 185 66 / 55%);
+  border-radius: 14px;
+  background: linear-gradient(160deg, #2a1d54, #0f1330 78%);
+  box-shadow: 0 14px 34px rgb(0 0 0 / 45%), inset 0 1px 0 rgb(255 236 180 / 20%);
+}
+.flag-ground__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* The art is lit from within; fading its base lets the caption sit on the
+     building rather than in a separate box below it. */
+  -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 99%);
+  mask-image: linear-gradient(180deg, #000 62%, transparent 99%);
+}
+.flag-ground__district-copy {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  margin-top: -58px;
+  padding: 0 14px 14px;
+  text-align: center;
+}
+/* This label sits over the darkest part of the illustration, so it needs its own
+   shadow — at panel-grey on painted night art it was almost invisible. */
+.flag-ground__own-label { color: #efe6ff; font-size: .6rem; font-weight: 800; letter-spacing: .1em; text-shadow: 0 1px 8px rgb(0 0 0 / 90%), 0 0 18px rgb(0 0 0 / 70%); }
+.flag-ground__district-copy strong {
+  color: #fffaf0;
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 80%);
+}
 .flag-ground__state-pill { margin-top: 2px; padding: 3px 10px; border: 1px solid currentColor; border-radius: 999px; color: #c9a7ff; background: rgb(12 16 34 / 55%); font-size: .61rem; font-weight: 800; line-height: 1; }
 .flag-ground__state-pill.is-stable { color: #8bddb0; }
 .flag-ground__state-pill.is-contested { color: #ffd16e; }
 .flag-ground__state-pill.is-at-risk { color: #ff9d99; }
-.flag-ground__locked-grounds { position: absolute; z-index: 2; inset: 16px; }
-.flag-ground__locked-ground { position: absolute; display: grid; width: 73px; min-height: 64px; place-items: center; align-content: center; gap: 2px; border: 1px solid rgb(247 242 232 / 20%); border-radius: 10px; background: rgb(8 10 26 / 62%); color: #8f8b9c; text-align: center; }
-.flag-ground__locked-ground:nth-child(1) { top: 5px; left: 50%; transform: translateX(-50%); }
-.flag-ground__locked-ground:nth-child(2) { top: 50%; left: 0; transform: translateY(-50%); }
-.flag-ground__locked-ground:nth-child(3) { right: 0; bottom: 3px; }
-.flag-ground__locked-ground:nth-child(4) { top: 50%; right: 0; transform: translateY(-50%); }
-.flag-ground__locked-ground > span { font-size: .76rem; filter: grayscale(1); }
-.flag-ground__locked-ground strong { color: #b9b2c9; font-family: var(--font-display); font-size: .67rem; line-height: 1.2; }
-.flag-ground__locked-ground small { color: #817b8d; font-size: .53rem; font-weight: 800; }
 
-.flag-ground__power, .flag-ground__preview, .flag-ground__action { border: 1px solid rgb(247 242 232 / 22%); border-radius: 12px; background: linear-gradient(160deg, rgb(156 120 255 / 15%), rgb(12 16 34 / 25%)); }
 .flag-ground__power { padding: 13px; }
 .flag-ground__power-heading { display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; }
 .flag-ground h2 { color: #fff1c7; font-size: .88rem; line-height: 1.3; }
@@ -65,9 +77,6 @@
 .flag-ground__gauge.is-stable > span { background: linear-gradient(90deg, #398d6a, #85d9a4); }
 .flag-ground__power-help { margin-top: 9px; color: #d4c6ff; font-size: .67rem; font-weight: 700; line-height: 1.38; }
 
-.flag-ground__preview { display: flex; gap: 10px; align-items: center; margin-top: 12px; padding: 11px 12px; }
-.flag-ground__preview-lock { display: grid; width: 30px; height: 30px; flex: none; place-items: center; border: 1px solid rgb(247 242 232 / 18%); border-radius: 50%; color: #aaa4b5; filter: grayscale(1); }
-.flag-ground__preview p { margin-top: 3px; color: #c9c0de; font-size: .67rem; line-height: 1.35; }
 
 .flag-ground__action { display: grid; gap: 9px; margin-top: 12px; padding: 13px; }
 .flag-ground__action > div { display: flex; gap: 8px; align-items: center; }
@@ -85,5 +94,22 @@
 
 @media (max-width: 360px) {
   .flag-ground { padding-right: 12px; padding-left: 12px; }
-  .flag-ground__locked-ground { width: 67px; }
 }
+
+/* --- Route rail ---------------------------------------------------------
+   Replaces four padlocked cards and a "Grounds opening later" box that only
+   repeated them. A rail states the one useful fact those cards never did:
+   which ground the courier opens next. */
+.flag-ground__route { margin-top: 12px; padding: 13px; border: 1px solid rgb(247 242 232 / 22%); border-radius: 12px; background: linear-gradient(160deg, rgb(156 120 255 / 12%), rgb(12 16 34 / 30%)); }
+.flag-ground__stations { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: 12px 0 0; padding: 0; list-style: none; }
+.flag-ground__stations::before { position: absolute; top: 14px; right: 10%; left: 10%; height: 2px; background: linear-gradient(90deg, #f4b942 0 18%, rgb(247 242 232 / 18%) 32%); content: ""; }
+.flag-ground__station { position: relative; display: grid; justify-items: center; gap: 6px; min-width: 0; }
+.flag-ground__station-node { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid rgb(247 242 232 / 24%); border-radius: 50%; background: #14132b; color: #8e89a0; font-size: .62rem; line-height: 1; }
+.flag-ground__station-name { color: #8e89a0; font-size: .53rem; font-weight: 800; line-height: 1.25; text-align: center; overflow-wrap: anywhere; }
+.flag-ground__station.is-held .flag-ground__station-node { border-color: #f4b942; background: #f4b942; color: #21180e; box-shadow: 0 0 12px rgb(244 185 66 / 45%); }
+.flag-ground__station.is-held .flag-ground__station-name { color: #f7d98a; }
+/* The next ground is the only other node that earns emphasis; the remaining
+   three stay quiet so the eye lands on what is actually reachable. */
+.flag-ground__station.is-next .flag-ground__station-node { width: 32px; height: 32px; border: 2px solid #ffd878; background: radial-gradient(circle, #9c78ff, #5e3fb0); color: #fffaf0; font-size: .74rem; box-shadow: 0 0 0 4px rgb(244 185 66 / 16%); transform: translateY(-2px); }
+.flag-ground__station.is-next .flag-ground__station-name { color: #e8e0f2; }
+.flag-ground__route-note { margin-top: 11px; color: #c9c0de; font-size: .65rem; line-height: 1.4; }
