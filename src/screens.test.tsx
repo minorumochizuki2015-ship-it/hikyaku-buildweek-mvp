@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { ArrivalScreen, DispatchScreen, JourneyScreen } from './App'
 import { checkpointRouteState } from './checkpointRoute'
 import { distanceTargetMetres, haversineDistanceMetres, rivalDistanceAtElapsedSeconds, rivalPaceMultiplier, startWalkTracking } from './movement'
+import { buildSealSummary, formatSealDate, sealCanvasDataUrl } from './ArrivalSeal'
 import { mockCompleteMission, mockGenerateMission } from '../shared/mockMission'
 
 const mission = mockGenerateMission({ availableMinutes: 10, energy: 'Steady', displayName: 'Ada' })
@@ -38,7 +39,66 @@ describe('HIYAKU static screens', () => {
     expect(screen).toContain('/assets/arrival-honjin-goze.mp4')
     expect(screen).toContain('今日の一食')
     expect(screen).toContain('simulated AI pacer')
+    expect(screen).toContain('HIYAKU · ARRIVAL SEAL')
+    expect(screen).toContain('Share Seal')
     expect(screen).not.toContain('meal-reward-kanto.mp4')
+  })
+})
+
+describe('arrival seal serialization', () => {
+  it('serializes a non-empty PNG data URL with an offscreen canvas', () => {
+    const originalDocument = Object.getOwnPropertyDescriptor(globalThis, 'document')
+    const context = {
+      canvas: { width: 0, height: 0 },
+      fillRect: vi.fn(),
+      strokeRect: vi.fn(),
+      beginPath: vi.fn(),
+      arc: vi.fn(),
+      fill: vi.fn(),
+      stroke: vi.fn(),
+      save: vi.fn(),
+      restore: vi.fn(),
+      translate: vi.fn(),
+      rotate: vi.fn(),
+      moveTo: vi.fn(),
+      lineTo: vi.fn(),
+      fillText: vi.fn(),
+      measureText: vi.fn(() => ({ width: 42 })),
+      createRadialGradient: vi.fn(() => ({ addColorStop: vi.fn() })),
+    } as unknown as CanvasRenderingContext2D
+    const canvas = {
+      width: 0,
+      height: 0,
+      getContext: vi.fn(() => context),
+      toDataURL: vi.fn(() => 'data:image/png;base64,SElZQUtV'),
+    }
+    ;(context as unknown as { canvas: HTMLCanvasElement }).canvas = canvas as unknown as HTMLCanvasElement
+    Object.defineProperty(globalThis, 'document', { configurable: true, value: { createElement: vi.fn(() => canvas) } })
+
+    try {
+      const image = sealCanvasDataUrl({ missionTitle: 'Courier', rank: 'Swift Courier', distance: '800m', duration: '10:00', completion: '100%', date: 'EDO · 2026.07.21' })
+      expect(image).toMatch(/^data:image\/png;base64,/)
+      expect(canvas.getContext).toHaveBeenCalledWith('2d')
+      expect(canvas.toDataURL).toHaveBeenCalledWith('image/png')
+    } finally {
+      if (originalDocument) Object.defineProperty(globalThis, 'document', originalDocument)
+      else delete (globalThis as { document?: Document }).document
+    }
+  })
+
+  it('builds a location-free courier summary when Node has no canvas implementation', () => {
+    const summary = buildSealSummary({
+      missionTitle: 'The Lantern Ledger',
+      rank: 'Swift Courier',
+      distance: '800m',
+      duration: '10:00',
+      completion: '100%',
+      date: 'EDO · 2026.07.21',
+    })
+
+    expect(summary).toBe('My HIYAKU courier seal is stamped: Swift Courier — The Lantern Ledger. 800m in 10:00, 100% complete.')
+    expect(summary).not.toMatch(/latitude|longitude|coordinate|日本橋/i)
+    expect(formatSealDate(new Date(2026, 6, 21))).toBe('EDO · 2026.07.21')
   })
 })
 

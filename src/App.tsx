@@ -11,6 +11,7 @@ import {
 } from '../shared/mockMission'
 import { distanceTargetMetres, rivalDistanceAtElapsedSeconds, type MovementMode, startWalkTracking } from './movement'
 import { checkpointRouteState } from './checkpointRoute'
+import { ArrivalSeal, buildSealSummary, formatSealDate, sealCanvasDataUrl, type ArrivalSealData } from './ArrivalSeal'
 
 type JourneyState = 'idle' | 'generating' | 'ready' | 'active' | 'paused' | 'completing' | 'completed'
 
@@ -259,16 +260,45 @@ export function ArrivalScreen({ mission, completion, stats, targetDistanceMetres
   const rivalDistance = rivalDistanceAtElapsedSeconds(targetDistanceMetres, availableMinutes, mission.title, stats.elapsedSeconds)
   const [shareStatus, setShareStatus] = useState('')
   const [mealOpen, setMealOpen] = useState(false)
-  const text = `HIYAKU — ${mission.title}: ${completion.rank}. ${distance}m in ${formatDuration(stats.elapsedSeconds)}.`
+  const sealData: ArrivalSealData = {
+    missionTitle: mission.title,
+    rank: completion.rank,
+    distance: `${distance}m`,
+    duration: formatDuration(stats.elapsedSeconds),
+    completion: `${stats.progress}%`,
+    date: formatSealDate(),
+  }
+  const text = buildSealSummary(sealData)
 
   const share = async () => {
     try {
+      const image = sealCanvasDataUrl(sealData)
+      let file: File | null = null
+      if (image) {
+        try {
+          const response = await fetch(image)
+          file = new File([await response.blob()], 'hiyaku-arrival-seal.png', { type: 'image/png' })
+        } catch {
+          // A browser that cannot construct a File proceeds to text/download fallbacks.
+        }
+      }
+      if (file && navigator.canShare?.({ files: [file] }) && navigator.share) {
+        await navigator.share({ title: 'My HIYAKU arrival seal', text, files: [file] })
+        setShareStatus('Seal shared as an image.')
+        return
+      }
       if (navigator.share) {
-        await navigator.share({ title: 'My HIYAKU mission', text })
-        setShareStatus('Result shared.')
+        await navigator.share({ title: 'My HIYAKU arrival seal', text })
+        setShareStatus('Seal summary shared.')
+      } else if (image) {
+        const link = document.createElement('a')
+        link.href = image
+        link.download = 'hiyaku-arrival-seal.png'
+        link.click()
+        setShareStatus('Seal PNG downloaded.')
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text)
-        setShareStatus('Result copied to clipboard.')
+        setShareStatus('Seal summary copied to clipboard.')
       } else {
         setShareStatus(text)
       }
@@ -290,11 +320,7 @@ export function ArrivalScreen({ mission, completion, stats, targetDistanceMetres
           <p className="arrival-kicker">Your courier run has found its door.</p>
         </header>
       </section>
-      <section className="arrival-stats" aria-label="Completed journey metrics">
-        <div><strong>{distance}m</strong><span>distance</span></div>
-        <div><strong>{formatDuration(stats.elapsedSeconds)}</strong><span>duration</span></div>
-        <div><strong>{stats.progress}%</strong><span>complete</span></div>
-      </section>
+      <ArrivalSeal data={sealData} />
       <section className="epilogue">
         <p>{completion.epilogue}</p>
         <p className="rival-arrival-summary">{arrivalRivalSummary(stats.distanceMetres, rivalDistance)}</p>
@@ -305,7 +331,7 @@ export function ArrivalScreen({ mission, completion, stats, targetDistanceMetres
         <span aria-hidden="true">✦</span> 今日の一食 <small>Watch the courier's reward</small>
       </button>
       <div className="arrival-actions">
-        <button className="secondary-button" type="button" onClick={share}>Share Result</button>
+        <button className="secondary-button" type="button" onClick={share}>Share Seal</button>
         <button className="primary-button compact" type="button" onClick={onRestart}>Start Another Mission</button>
       </div>
       <p className="share-status" aria-live="polite">{shareStatus}</p>

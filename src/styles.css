@@ -130,10 +130,17 @@ legend, .name-field > span { display: block; margin-bottom: 9px; color: #e8e4dc;
 .arrival-header .eyebrow { color: #ffe3a1; text-shadow: 0 1px 8px rgb(0 0 0 / 60%); }
 .arrival-header h1 { max-width: 340px; color: #fffaf0; text-shadow: 0 3px 18px rgb(0 0 0 / 72%); }
 .arrival-kicker { margin: 12px 0 0; max-width: 270px; color: #fff7e8; font-family: Georgia, "Hiragino Mincho ProN", serif; line-height: 1.5; text-shadow: 0 2px 9px rgb(0 0 0 / 72%); }
-.arrival-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 17px 0; padding: 14px 0; border-block: 1px solid rgb(247 217 138 / 34%); }
-.arrival-stats div { min-width: 0; text-align: center; }
-.arrival-stats strong { display: block; color: #f7d98a; font-size: 1.1rem; }
-.arrival-stats span { display: block; margin-top: 4px; color: #d4cddd; font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.arrival-seal { position: relative; margin: -26px 0 18px; padding: 5px; border-radius: 21px; background: linear-gradient(135deg, #f5ca70, #a92f2c 44%, #f5ca70); box-shadow: 0 16px 38px rgb(0 0 0 / 40%); }
+.seal-certificate { display: grid; min-height: 442px; padding: 18px 17px 14px; overflow: hidden; border: 1px solid rgb(255 232 177 / 72%); border-radius: 17px; background: radial-gradient(circle at 50% 42%, rgb(244 185 66 / 22%), transparent 39%), linear-gradient(145deg, #20172b, #10152b 67%); text-align: center; }
+.seal-brand, .seal-date { margin: 0; color: #f8d782; font-size: .64rem; font-weight: 900; letter-spacing: .17em; }
+.seal-mission { min-height: 2.7em; margin: 12px auto 5px; color: #fff3d5; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: clamp(1.15rem, 5vw, 1.48rem); font-weight: 700; line-height: 1.25; }
+.seal-stamp { display: grid; width: 184px; height: 184px; margin: 1px auto 10px; place-content: center; border: 5px double #ffc88b; border-radius: 50%; background: #bc3d32; color: #ffebbd; box-shadow: 0 0 0 7px rgb(188 61 50 / 24%), inset 0 0 0 9px rgb(93 22 24 / 18%); transform: rotate(-5deg); }
+.seal-stamp span { display: block; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 6.1rem; font-weight: 800; line-height: .78; }
+.seal-stamp small { margin-top: 17px; font-size: .55rem; font-weight: 900; letter-spacing: .22em; }
+.seal-rank { margin: 0; color: #f7d98a; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.4rem; font-weight: 700; line-height: 1.25; }
+.seal-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin: 15px 0 11px; padding: 12px 0; border-block: 1px solid rgb(247 217 138 / 35%); }
+.seal-metrics span { min-width: 0; color: #d4cddd; font-size: .57rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.seal-metrics strong { display: block; margin-bottom: 4px; color: #fff0cb; font-size: .96rem; letter-spacing: 0; text-transform: none; }
 .epilogue { padding: 1px 0; }
 .epilogue > p:first-child { margin: 0; color: #f7f2e8; font-family: Georgia, "Hiragino Mincho ProN", serif; font-size: 1.08rem; line-height: 1.65; }
 .rival-arrival-summary { margin: 17px 0 0; color: #f7d98a; font-weight: 700; line-height: 1.5; }
